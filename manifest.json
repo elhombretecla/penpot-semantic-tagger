@@ -1,8 +1,10 @@
 {
-  "id": "penpot.semantic-tagger",
   "name": "Semantic Tagger Pro",
-  "version": "1.0.0",
-  "main": "index.html",
-  "permissions": ["content:read", "content:write", "library:write"],
-  "icon": "icon.svg"
+  "description": "Tag layers with HTML semantics and export accessible HTML/JSX.",
+  "code": "/assets/plugin.js",
+  "icon": "/assets/icon.svg",
+  "permissions": [
+    "content:read",
+    "content:write"
+  ]
 }

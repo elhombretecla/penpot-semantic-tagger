@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Semantic Tagger Pro</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 1rem;
+        width: 300px;
+      }
+      select, button {
+        margin-top: 1rem;
+        width: 100%;
+        padding: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Etiqueta semántica HTML</h3>
+    <select id="semantic-type">
+      <optgroup label="Estructura">
+        <option value="nav">nav</option>
+        <option value="header">header</option>
+        <option value="main">main</option>
+        <option value="section">section</option>
+        <option value="aside">aside</option>
+        <option value="footer">footer</option>
+        <option value="article">article</option>
+        <option value="div">div</option>
+      </optgroup>
+      <optgroup label="Contenido">
+        <option value="h1">h1</option>
+        <option value="h2">h2</option>
+        <option value="h3">h3</option>
+        <option value="h4">h4</option>
+        <option value="h5">h5</option>
+        <option value="h6">h6</option>
+        <option value="p">p</option>
+        <option value="ul">ul</option>
+        <option value="ol">ol</option>
+        <option value="li">li</option>
+        <option value="figure">figure</option>
+        <option value="figcaption">figcaption</option>
+        <option value="blockquote">blockquote</option>
+      </optgroup>
+      <optgroup label="Interacción">
+        <option value="a">a</option>
+        <option value="button">button</option>
+        <option value="details">details</option>
+        <option value="summary">summary</option>
+        <option value="dialog">dialog</option>
+      </optgroup>
+      <optgroup label="Formularios">
+        <option value="form">form</option>
+        <option value="input">input</option>
+        <option value="label">label</option>
+        <option value="select">select</option>
+        <option value="textarea">textarea</option>
+        <option value="fieldset">fieldset</option>
+        <option value="legend">legend</option>
+      </optgroup>
+      <optgroup label="Tablas">
+        <option value="table">table</option>
+        <option value="thead">thead</option>
+        <option value="tbody">tbody</option>
+        <option value="tr">tr</option>
+        <option value="td">td</option>
+        <option value="th">th</option>
+      </optgroup>
+    </select>
+    <button onclick="applySemantic()">Aplicar etiqueta</button>
+    <button onclick="exportHTML()">Exportar HTML</button>
+    <button onclick="exportJSX()">Exportar JSX</button>
+    <script src="assets/index.js"></script>
+  </body>
+</html>

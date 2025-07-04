@@ -1,0 +1,8 @@
+{
+  "id": "penpot.semantic-tagger",
+  "name": "Semantic Tagger Pro",
+  "version": "1.0.0",
+  "main": "index.html",
+  "permissions": ["content:read", "content:write", "library:write"],
+  "icon": "icon.svg"
+}

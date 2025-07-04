@@ -1,7 +1,7 @@
 {
   "name": "Semantic Tagger Pro",
   "description": "Tag layers with HTML semantics and export accessible HTML/JSX.",
-  "code": "/assets/plugin.js",
+  "code": "/assets/index.js",
   "icon": "/assets/icon.svg",
   "permissions": [
     "content:read",

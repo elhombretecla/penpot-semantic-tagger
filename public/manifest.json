@@ -1,0 +1,13 @@
+{
+  "name": "Semantic Tagger",
+  "id": "semantic-tagger-plugin",
+  "version": "1.0.0",
+  "description": "Apply semantic tags and properties to elements for future code export",
+  "author": "Juan de la Cruz",
+  "ui": "index.html",
+  "icon": "icon.svg",
+  "permissions": {
+    "content-write": true,
+    "library-write": true
+  }
+}

@@ -1,8 +1,8 @@
 {
   "name": "Semantic Tagger",
   "description": "Apply semantic tags and properties to elements for future code export",
-  "code": "index.html",
-  "icon": "icon.svg",
+  "code": "./index.html",
+  "icon": "./icon.svg",
   "permissions": [
     "content:read",
     "content:write",

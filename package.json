@@ -13,7 +13,7 @@
     "ui-components",
     "export"
   ],
-  "author": "Tu Nombre",
+  "author": "Juan de la Cruz",
   "license": "MIT",
   "scripts": {
     "dev": "vite-live-preview",

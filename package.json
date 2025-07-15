@@ -1,16 +1,33 @@
 {
-  "name": "penpot-semantic-tagger",
+  "name": "penpot-semantic-tagging-plugin",
   "private": true,
   "version": "1.0.0",
+  "description": "Plugin for Semantic Tagging and Code Export - assigns HTML tags and UI components to design elements",
   "type": "module",
+  "keywords": [
+    "penpot",
+    "plugin",
+    "semantic",
+    "tagging",
+    "html",
+    "ui-components",
+    "export"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite-live-preview",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@penpot/plugin-styles": "1.3.2",
+    "@penpot/plugin-types": "1.3.2"
   },
   "devDependencies": {
-    "@penpot/plugin-types": "^1.0.0",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0"
+    "vite": "^5.2.0",
+    "vite-live-preview": "^0.2.2"
   }
 }

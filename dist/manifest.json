@@ -1,0 +1,11 @@
+{
+  "name": "Semantic Tagging Plugin",
+  "code": "plugin.js",
+  "description": "Plugin for Semantic Tagging and Code Export - assigns HTML tags and UI components to design elements",
+  "permissions": [
+    "content:read",
+    "content:write",
+    "library:read",
+    "library:write"
+  ]
+}

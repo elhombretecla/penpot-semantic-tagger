@@ -1,0 +1,25 @@
+{
+    "name": "@types/ansi-html",
+    "version": "0.0.0",
+    "description": "TypeScript definitions for ansi-html",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/ansi-html",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Sherlock Doyle",
+            "githubUsername": "sherlockdoyle",
+            "url": "https://github.com/sherlockdoyle"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/ansi-html"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "0f558a2823fe614684be5e4a763d4672022e96a9717ba3ec43c90159787a6f8c",
+    "typeScriptVersion": "4.6"
+}

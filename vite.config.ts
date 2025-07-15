@@ -1,7 +1,24 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from "vite";
+import livePreview from "vite-live-preview";
 
 export default defineConfig({
-  server: {
-    port: 8080, // Puedes cambiar el puerto si lo necesitas
+  plugins: [
+    livePreview({
+      reload: true,
+    }),
+  ],
+  build: {
+    rollupOptions: {
+      input: {
+        plugin: "src/plugin.ts",
+        index: "./index.html",
+      },
+      output: {
+        entryFileNames: "[name].js",
+      },
+    },
+  },
+  preview: {
+    port: 4400,
   },
 });

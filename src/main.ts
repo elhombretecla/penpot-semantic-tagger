@@ -140,7 +140,7 @@ function addPropertyField(key: string = "", value: string = "", placeholder: str
   propertyItem.innerHTML = `
     <input type="text" class="input property-key" placeholder="Property" value="${key}">
     <input type="text" class="input property-value" placeholder="${placeholder || 'Value'}" value="${value}">
-    <button type="button" data-appearance="primary" data-variant="destructive" title="Remove property" class="btn-remove">×</button>
+    <button type="button" data-appearance="secondary" title="Remove property" class="btn-remove">-</button>
   `;
   
   // Event listener to remove property
@@ -201,6 +201,18 @@ function removeTag() {
     type: "remove-tag",
     data: {
       elementIds: currentSelection.map(el => el.id)
+    }
+  };
+  
+  parent.postMessage(message, "*");
+}
+
+// Remove tag from specific element (from tagged elements list)
+function removeTagFromElement(elementId: string) {
+  const message: PluginMessage = {
+    type: "remove-tag",
+    data: {
+      elementIds: [elementId]
     }
   };
   
@@ -407,7 +419,18 @@ function updateTaggedElementsList() {
         </div>
         ${hasProperties ? `<div class="tagged-element-properties">${propertiesText}</div>` : ''}
       </div>
+      <button type="button" class="remove-tag-btn" data-appearance="primary" data-variant="destructive" title="Remove tag" data-element-id="${tagData.elementId}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14zM10 11v6M14 11v6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </button>
     `;
+    
+    // Add event listener for the remove button
+    const removeBtn = item.querySelector('.remove-tag-btn');
+    removeBtn?.addEventListener('click', () => {
+      removeTagFromElement(tagData.elementId);
+    });
     
     taggedElementsList.appendChild(item);
   });

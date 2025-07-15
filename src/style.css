@@ -26,6 +26,8 @@
 .select,
 .input {
   font-size: 1rem;
+  height: 40px;
+  background-size: 24px;
 }
 
 .status-message {
@@ -112,8 +114,8 @@ h2 {
 
 .btn-remove {
   font-size: 1.3rem;
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   padding: 0;
 }
 
@@ -157,6 +159,7 @@ h2 {
   margin-bottom: 0.25rem;
   background: var(--db-secondary);
   border-radius: 10px;
+  gap: 0.5rem;
 }
 
 .tagged-element-info {
@@ -195,6 +198,22 @@ h2 {
   word-break: break-all;
   margin-left: 4px;
   line-height: 1.3;
+}
+
+.remove-tag-btn {
+  font-size: 1.2rem;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .empty-state {

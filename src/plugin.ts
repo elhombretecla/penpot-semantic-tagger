@@ -458,7 +458,7 @@ function exportTags() {
   const exportData = {
     metadata: {
       pluginName: "Semantic Tagging Plugin",
-      version: "2.0.0",
+      version: "1.2.0",
       exportDate: new Date().toISOString(),
       fileName: penpot.currentFile?.name || "Untitled",
       pageName: penpot.currentPage?.name || "Untitled Page",

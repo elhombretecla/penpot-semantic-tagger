@@ -1,4 +1,4 @@
-# 🏷️ Smart Auto-Tagging Guide
+# 🏷️ Auto-Tagging Guide
 
 ## Naming Conventions for Auto-Tagging
 

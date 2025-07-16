@@ -1,7 +1,7 @@
 {
   "name": "penpot-semantic-tagging-plugin",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Plugin for Semantic Tagging and Code Export - assigns HTML tags and UI components to design elements",
   "type": "module",
   "keywords": [

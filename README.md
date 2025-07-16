@@ -8,7 +8,6 @@ An advanced plugin for Penpot that allows assigning semantic tags (HTML and UI c
 - **Tree Structure**: Exports elements with parent-child hierarchy using the `children` property
 - **Detailed Styles**: Captures complete CSS properties (colors, typography, borders, shadows)
 - **Layout Information**: Automatically detects Flexbox and Grid properties
-- **Enhanced View**: Improved interface showing content, styles, and layout of each element
 - **Semantic Tagging**: Assigns standard HTML tags and components from popular libraries (Material UI, Chakra UI, Bootstrap)
 - **Custom Properties**: Defines attributes, CSS classes, events, and specific properties
 - **Advanced JSON Export**: Exports with tree structure and complete metadata

@@ -225,18 +225,18 @@ El archivo JSON exportado ahora incluye dos estructuras:
 ### 📋 Nuevas Propiedades Incluidas
 
 **Contenido y Media:**
-- `content`: Texto real del elemento
+- `content`: Texto real extraído del elemento
 - `imageUrl`: URL del asset de imagen
 
-**Estilos CSS Detallados:**
-- `backgroundColor`, `color`: Colores extraídos de Penpot
-- `fontFamily`, `fontSize`, `fontWeight`: Propiedades tipográficas
-- `border`, `borderRadius`: Información de bordes
-- `boxShadow`: Sombras y efectos
-- `width`, `height`: Dimensiones
-- `opacity`: Transparencia
+**Estilos CSS Consolidados (única fuente de verdad):**
+- **Posicionamiento**: `left`, `top`, `width`, `height` (siempre incluidos)
+- **Colores**: `backgroundColor`, `color` extraídos de Penpot
+- **Tipografía**: `fontFamily`, `fontSize`, `fontWeight`, `textAlign`, `lineHeight`
+- **Bordes**: `border`, `borderRadius`
+- **Efectos**: `boxShadow`, `opacity`
+- **Espaciado**: `padding`, `margin`
 
-**Información de Layout:**
+**Información de Layout (inferida automáticamente):**
 - `display`: flex, grid, etc.
 - `flexDirection`: row, column
 - `justifyContent`, `alignItems`: Alineación
@@ -245,6 +245,14 @@ El archivo JSON exportado ahora incluye dos estructuras:
 **Jerarquía:**
 - `children`: Array con elementos hijos directos
 - Estructura anidada que refleja la jerarquía real del diseño
+- **IDs únicos**: Cada elemento tiene su `elementId` único de Penpot
+
+### 🎯 Mejoras v2.0
+
+1. **Sin Redundancia**: Solo estructura `tree`, eliminada lista `elements` duplicada
+2. **Estilos Consolidados**: Toda información visual en objeto `styles` único
+3. **IDs Únicos**: Cada elemento mantiene su ID real de Penpot
+4. **Contenido Completo**: Extracción automática de texto e imágenes
 
 ## 🔧 Customization
 

@@ -318,7 +318,8 @@ function showAutoTagFeedback(message: string, type: "success" | "error" | "info"
   }, 5000);
 }
 
-// Parse layer name for auto-tagging
+// Parse layer name for auto-tagging (unused - kept for reference)
+/*
 function parseLayerName(layerName: string): { tag: string; properties: Record<string, string> } | null {
   if (!layerName || layerName.trim() === "") {
     return null;
@@ -439,6 +440,7 @@ function parseLayerName(layerName: string): { tag: string; properties: Record<st
 
   return { tag, properties };
 }
+*/
 
 // Setup collapsible sections functionality
 function setupCollapsibleSections() {
@@ -772,7 +774,7 @@ window.addEventListener("message", (event) => {
     }
     // Auto-tag complete feedback
     else if (message.type === "auto-tag-complete") {
-      const { taggedCount, processedElements } = message.data;
+      const { taggedCount } = message.data;
       if (taggedCount > 0) {
         showAutoTagFeedback(`✅ ${taggedCount} elements were successfully tagged.`, "success");
       } else {

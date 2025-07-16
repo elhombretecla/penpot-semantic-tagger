@@ -266,8 +266,8 @@ function analyzeLayout(element: any): LayoutData {
       const sortedByY = [...positions].sort((a, b) => a.y - b.y);
       
       // Check for horizontal arrangement (similar Y positions)
-      const yValues = positions.map(p => p.y);
-      const xValues = positions.map(p => p.x);
+      const yValues = positions.map((p: any) => p.y);
+      const xValues = positions.map((p: any) => p.x);
       const yVariance = Math.max(...yValues) - Math.min(...yValues);
       const xVariance = Math.max(...xValues) - Math.min(...xValues);
       
@@ -312,8 +312,8 @@ function analyzeLayout(element: any): LayoutData {
       if (layout.display === "flex" && positions.length > 0) {
         // Check horizontal alignment for vertical layouts
         if (layout.flexDirection === "column") {
-          const leftAligned = positions.every(p => Math.abs(p.x - positions[0].x) < 10);
-          const centerAligned = positions.every(p => Math.abs((p.x + p.width/2) - (positions[0].x + positions[0].width/2)) < 10);
+          const leftAligned = positions.every((p: any) => Math.abs(p.x - positions[0].x) < 10);
+          const centerAligned = positions.every((p: any) => Math.abs((p.x + p.width/2) - (positions[0].x + positions[0].width/2)) < 10);
           
           if (leftAligned) layout.alignItems = "flex-start";
           else if (centerAligned) layout.alignItems = "center";
@@ -322,8 +322,8 @@ function analyzeLayout(element: any): LayoutData {
         
         // Check vertical alignment for horizontal layouts
         if (layout.flexDirection === "row") {
-          const topAligned = positions.every(p => Math.abs(p.y - positions[0].y) < 10);
-          const centerAligned = positions.every(p => Math.abs((p.y + p.height/2) - (positions[0].y + positions[0].height/2)) < 10);
+          const topAligned = positions.every((p: any) => Math.abs(p.y - positions[0].y) < 10);
+          const centerAligned = positions.every((p: any) => Math.abs((p.y + p.height/2) - (positions[0].y + positions[0].height/2)) < 10);
           
           if (topAligned) layout.alignItems = "flex-start";
           else if (centerAligned) layout.alignItems = "center";

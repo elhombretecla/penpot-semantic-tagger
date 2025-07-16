@@ -1,25 +1,19 @@
 # Semantic Tagging Plugin for Penpot
 
-Un plugin avanzado para Penpot que permite asignar etiquetas semánticas (HTML y componentes UI) a elementos de diseño, facilitando la exportación de código y la colaboración entre diseñadores y desarrolladores.
+An advanced plugin for Penpot that allows assigning semantic tags (HTML and UI components) to design elements, facilitating code export and collaboration between designers and developers.
 
-## 🚀 Características Principales
+## 🚀 Main Features
 
-### ✨ Nuevas Funcionalidades v2.0
-
-- **🌳 Estructura de Árbol**: Exporta elementos con jerarquía padre-hijo usando la propiedad `children`
-- **📝 Contenido Real**: Extrae automáticamente el texto y URLs de imágenes de los elementos
-- **🎨 Estilos Detallados**: Captura propiedades CSS completas (colores, tipografía, bordes, sombras)
-- **📐 Información de Layout**: Detecta automáticamente propiedades de Flexbox y Grid
-- **🔍 Vista Enriquecida**: Interfaz mejorada que muestra contenido, estilos y layout de cada elemento
-
-### 🎯 Características Existentes
-
-- **Etiquetado Semántico**: Asigna etiquetas HTML estándar y componentes de librerías populares (Material UI, Chakra UI, Bootstrap)
-- **Propiedades Personalizadas**: Define atributos, clases CSS, eventos y propiedades específicas
-- **Persistencia de Datos**: Las etiquetas se guardan en el archivo de Penpot
-- **Exportación JSON Avanzada**: Exporta con estructura de árbol y metadatos completos
-- **Interfaz Intuitiva**: UI responsiva que se adapta al tema de Penpot
-- **Selección Reactiva**: Responde automáticamente a cambios de selección en el canvas
+- **Smart Auto-Tagging**: Automatically tags elements based on layer naming conventions
+- **Tree Structure**: Exports elements with parent-child hierarchy using the `children` property
+- **Detailed Styles**: Captures complete CSS properties (colors, typography, borders, shadows)
+- **Layout Information**: Automatically detects Flexbox and Grid properties
+- **Enhanced View**: Improved interface showing content, styles, and layout of each element
+- **Semantic Tagging**: Assigns standard HTML tags and components from popular libraries (Material UI, Chakra UI, Bootstrap)
+- **Custom Properties**: Defines attributes, CSS classes, events, and specific properties
+- **Advanced JSON Export**: Exports with tree structure and complete metadata
+- **Intuitive Interface**: Responsive UI that adapts to Penpot's theme
+- **Reactive Selection**: Automatically responds to selection changes on the canvas
 
 ## 📦 Installation and Setup
 
@@ -95,7 +89,29 @@ The plugin automatically suggests properties based on the selected tag:
 - **Remove**: Remove the tag from the selected element
 - **View Tagged**: List all tagged elements in the project
 
-### 5. Export
+### 5. 🏷️ Smart Auto-Tagging (NEW)
+
+The most powerful feature of the plugin: automatically tags elements based on layer names.
+
+**Naming Conventions:**
+- `button/primary` → `<button className="btn-primary" type="button">`
+- `input/email` → `<input type="email">`
+- `nav/main` → `<nav className="nav-main">`
+- `MuiButton/contained/primary` → `<MuiButton variant="contained" color="primary">`
+
+**How to use:**
+1. Name your layers following the conventions (see `auto-tagging-examples.md`)
+2. Select elements or groups on the canvas
+3. Enable the checkbox "Auto-tag using layer name"
+4. Click "🏷️ Auto-Tag Selection"
+5. The plugin will recursively process all elements and their children
+
+**Benefits:**
+- **10x Productivity**: Tag complete components in seconds
+- **Consistency**: Establishes a common "language" between design and development
+- **Scalability**: Perfect for teams and large projects
+
+### 6. Export
 
 - Click **"Export Tags (JSON)"**
 - A modal opens with structured information
@@ -149,11 +165,11 @@ npm run build
 - Penpot events (selection, theme, page)
 - Persistence in file metadata
 
-## 📊 Formato de Exportación Mejorado v2.0
+## 📊 Enhanced Export Format 
 
-El archivo JSON exportado ahora incluye dos estructuras:
+The exported JSON file now includes a clean structure:
 
-### 🌳 Estructura de Árbol (Recomendada para Desarrollo)
+### 🌳 Tree Structure (Recommended for Development)
 
 ```json
 {
@@ -222,37 +238,37 @@ El archivo JSON exportado ahora incluye dos estructuras:
 }
 ```
 
-### 📋 Nuevas Propiedades Incluidas
+### 📋 New Properties Included
 
-**Contenido y Media:**
-- `content`: Texto real extraído del elemento
-- `imageUrl`: URL del asset de imagen
+**Content and Media:**
+- `content`: Real text extracted from the element
+- `imageUrl`: Image asset URL
 
-**Estilos CSS Consolidados (única fuente de verdad):**
-- **Posicionamiento**: `left`, `top`, `width`, `height` (siempre incluidos)
-- **Colores**: `backgroundColor`, `color` extraídos de Penpot
-- **Tipografía**: `fontFamily`, `fontSize`, `fontWeight`, `textAlign`, `lineHeight`
-- **Bordes**: `border`, `borderRadius`
-- **Efectos**: `boxShadow`, `opacity`
-- **Espaciado**: `padding`, `margin`
+**Consolidated CSS Styles (single source of truth):**
+- **Positioning**: `left`, `top`, `width`, `height` (always included)
+- **Colors**: `backgroundColor`, `color` extracted from Penpot
+- **Typography**: `fontFamily`, `fontSize`, `fontWeight`, `textAlign`, `lineHeight`
+- **Borders**: `border`, `borderRadius`
+- **Effects**: `boxShadow`, `opacity`
+- **Spacing**: `padding`, `margin`
 
-**Información de Layout (inferida automáticamente):**
+**Layout Information (automatically inferred):**
 - `display`: flex, grid, etc.
 - `flexDirection`: row, column
-- `justifyContent`, `alignItems`: Alineación
-- `gap`: Espaciado entre elementos
+- `justifyContent`, `alignItems`: Alignment
+- `gap`: Spacing between elements
 
-**Jerarquía:**
-- `children`: Array con elementos hijos directos
-- Estructura anidada que refleja la jerarquía real del diseño
-- **IDs únicos**: Cada elemento tiene su `elementId` único de Penpot
+**Hierarchy:**
+- `children`: Array with direct child elements
+- Nested structure that reflects the real design hierarchy
+- **Unique IDs**: Each element has its unique `elementId` from Penpot
 
-### 🎯 Mejoras v2.0
+### 🎯 Latest Improvements
 
-1. **Sin Redundancia**: Solo estructura `tree`, eliminada lista `elements` duplicada
-2. **Estilos Consolidados**: Toda información visual en objeto `styles` único
-3. **IDs Únicos**: Cada elemento mantiene su ID real de Penpot
-4. **Contenido Completo**: Extracción automática de texto e imágenes
+1. **No Redundancy**: Only `tree` structure, removed duplicate `elements` list
+2. **Consolidated Styles**: All visual information in single `styles` object
+3. **Unique IDs**: Each element maintains its real Penpot ID
+4. **Complete Content**: Automatic extraction of text and images
 
 ## 🔧 Customization
 

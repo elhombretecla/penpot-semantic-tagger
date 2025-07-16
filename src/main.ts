@@ -73,6 +73,11 @@ const removeTagBtn = document.getElementById("remove-tag")!;
 const taggedElementsList = document.getElementById("tagged-elements")!;
 const exportTagsBtn = document.getElementById("export-tags")!;
 
+// Auto-tagging elements
+const autoTagEnabledCheckbox = document.getElementById("auto-tag-enabled") as HTMLInputElement;
+const autoTagSelectionBtn = document.getElementById("auto-tag-selection")!;
+const autoTagFeedback = document.getElementById("auto-tag-feedback")!;
+
 // Initialization
 function init() {
   setupEventListeners();
@@ -99,6 +104,9 @@ function setupEventListeners() {
   
   // Custom input
   customTagInput.addEventListener("input", onCustomTagInput);
+  
+  // Auto-tagging functionality
+  autoTagSelectionBtn.addEventListener("click", autoTagSelection);
 }
 
 // Handle tag selector changes
@@ -270,6 +278,163 @@ function exportTags() {
 // Request selection update
 function requestSelectionUpdate() {
   parent.postMessage({ type: "get-selection" }, "*");
+}
+
+// Auto-tagging functionality
+function autoTagSelection() {
+  if (!autoTagEnabledCheckbox.checked) {
+    showAutoTagFeedback("Auto-tagging is disabled. Enable the option to continue.", "info");
+    return;
+  }
+
+  if (currentSelection.length === 0) {
+    showAutoTagFeedback("Please select at least one group or layer.", "error");
+    return;
+  }
+
+  // Send message to main plugin to start auto-tagging
+  const message: PluginMessage = {
+    type: "auto-tag-selection",
+    data: {
+      elementIds: currentSelection.map(el => el.id)
+    }
+  };
+  
+  parent.postMessage(message, "*");
+}
+
+// Show feedback message for auto-tagging
+function showAutoTagFeedback(message: string, type: "success" | "error" | "info") {
+  autoTagFeedback.textContent = message;
+  autoTagFeedback.className = `auto-tag-feedback ${type}`;
+  autoTagFeedback.style.display = "block";
+  
+  // Hide after 5 seconds
+  setTimeout(() => {
+    autoTagFeedback.style.display = "none";
+  }, 5000);
+}
+
+// Parse layer name for auto-tagging
+function parseLayerName(layerName: string): { tag: string; properties: Record<string, string> } | null {
+  if (!layerName || layerName.trim() === "") {
+    return null;
+  }
+
+  const parts = layerName.trim().split('/').map(p => p.trim()).filter(p => p !== "");
+  
+  if (parts.length === 0) {
+    return null;
+  }
+
+  const tag = parts[0];
+  const properties: Record<string, string> = {};
+
+  // Apply intelligent parsing based on tag type
+  switch (tag.toLowerCase()) {
+    case 'input':
+      if (parts[1]) {
+        properties.type = parts[1].toLowerCase();
+        if (parts[2]) {
+          properties.placeholder = parts[2];
+        }
+      }
+      break;
+
+    case 'button':
+      if (parts[1]) {
+        properties.className = `btn-${parts[1].toLowerCase()}`;
+        properties.type = parts[1].toLowerCase() === 'submit' ? 'submit' : 'button';
+      }
+      break;
+
+    case 'a':
+      if (parts[1]) {
+        if (parts[1].toLowerCase() === 'external') {
+          properties.target = '_blank';
+          properties.rel = 'noopener noreferrer';
+        }
+        if (parts[2]) {
+          properties.href = parts[2];
+        }
+      }
+      break;
+
+    case 'img':
+      if (parts[1]) {
+        properties.alt = parts[1];
+      }
+      if (parts[2]) {
+        properties.src = parts[2];
+      }
+      break;
+
+    case 'nav':
+      if (parts[1]) {
+        properties.className = `nav-${parts[1].toLowerCase()}`;
+      }
+      break;
+
+    case 'div':
+    case 'section':
+    case 'header':
+    case 'footer':
+    case 'main':
+    case 'aside':
+      if (parts[1]) {
+        properties.className = parts[1].toLowerCase().replace(/\s+/g, '-');
+      }
+      break;
+
+    case 'h1':
+    case 'h2':
+    case 'h3':
+    case 'h4':
+    case 'h5':
+    case 'h6':
+      if (parts[1]) {
+        properties.className = `heading-${parts[1].toLowerCase()}`;
+      }
+      break;
+
+    // Material UI components
+    case 'muibutton':
+      if (parts[1]) {
+        properties.variant = parts[1].toLowerCase();
+      }
+      if (parts[2]) {
+        properties.color = parts[2].toLowerCase();
+      }
+      break;
+
+    case 'muitextfield':
+      if (parts[1]) {
+        properties.variant = parts[1].toLowerCase();
+      }
+      if (parts[2]) {
+        properties.label = parts[2];
+      }
+      break;
+
+    // Chakra UI components
+    case 'chakrabutton':
+      if (parts[1]) {
+        properties.colorScheme = parts[1].toLowerCase();
+      }
+      if (parts[2]) {
+        properties.size = parts[2].toLowerCase();
+      }
+      break;
+
+    default:
+      // For any other tag, use the second part as className if available
+      if (parts[1]) {
+        properties.className = parts[1].toLowerCase().replace(/\s+/g, '-');
+      }
+      break;
+  }
+
+  return { tag, properties };
 }
 
 // Show JSON data for manual copying
@@ -512,10 +677,10 @@ function updateTaggedElementsList() {
       <div class="tagged-element-info">
         <div class="tagged-element-header">
           <span class="tagged-element-name">${tagData.elementName}</span>
-          <span class="tagged-element-tag">${tagData.tag}</span>
+          <span class="tagged-element-tag">&lt;${tagData.tag}&gt;</span>
           ${tagData.elementType ? `<span class="tagged-element-type">(${tagData.elementType})</span>` : ''}
         </div>
-        ${hasProperties ? `<div class="tagged-element-properties">⚙️ ${propertiesText}</div>` : ''}
+        ${hasProperties ? `<div class="tagged-element-properties">️${propertiesText}</div>` : ''}
         ${additionalInfo}
       </div>
       <button type="button" class="remove-tag-btn" data-appearance="primary" data-variant="destructive" title="Remove tag" data-element-id="${tagData.elementId}">
@@ -574,6 +739,16 @@ window.addEventListener("message", (event) => {
     // Export data received
     else if (message.type === "export-data") {
       downloadJsonFile(message.data);
+    }
+    // Auto-tag complete feedback
+    else if (message.type === "auto-tag-complete") {
+      const { taggedCount, processedElements } = message.data;
+      if (taggedCount > 0) {
+        showAutoTagFeedback(`✅ ${taggedCount} elements were successfully tagged.`, "success");
+      } else {
+        showAutoTagFeedback("ℹ️ No elements with valid names were found to tag.", "info");
+      }
+      updateTaggedElementsList();
     }
   }
 });

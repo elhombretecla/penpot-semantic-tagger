@@ -477,6 +477,201 @@ function exportTags() {
   });
 }
 
+// Auto-tag elements based on layer names
+function autoTagElements(elementIds: string[]) {
+  let taggedCount = 0;
+  let processedElements: string[] = [];
+
+  // Recursive function to process each node
+  function processNode(element: any): void {
+    if (!element) return;
+
+    const layerName = element.name || '';
+    const parsedTag = parseLayerNameForAutoTag(layerName);
+    
+    if (parsedTag) {
+      // Extract comprehensive data
+      const styles = extractStyles(element);
+      const { content, imageUrl } = extractContent(element);
+      const layout = analyzeLayout(element);
+
+      // Create enhanced tag data
+      const tagData: TagData = {
+        tag: parsedTag.tag,
+        properties: parsedTag.properties,
+        elementId: element.id,
+        elementName: element.name || "Unnamed",
+        elementType: element.type,
+        styles,
+        layout: Object.keys(layout).length > 0 ? layout : undefined,
+        content,
+        imageUrl,
+        children: [] // Will be populated during export
+      };
+
+      // Save to local map
+      taggedElements.set(element.id, tagData);
+      processedElements.push(element.id);
+      taggedCount++;
+
+      // Confirm to UI
+      penpot.ui.sendMessage({
+        source: "penpot",
+        type: "tag-applied",
+        data: tagData
+      });
+    }
+
+    // Process children recursively
+    if (element.children && Array.isArray(element.children)) {
+      element.children.forEach((child: any) => processNode(child));
+    }
+  }
+
+  // Process each selected element
+  elementIds.forEach(elementId => {
+    const element = penpot.currentPage?.getShapeById(elementId);
+    if (element) {
+      processNode(element);
+    }
+  });
+
+  // Send feedback to UI
+  penpot.ui.sendMessage({
+    source: "penpot",
+    type: "auto-tag-complete",
+    data: {
+      taggedCount,
+      processedElements
+    }
+  });
+
+  // Save to file
+  saveTagsToFile();
+}
+
+// Parse layer name for auto-tagging (backend version)
+function parseLayerNameForAutoTag(layerName: string): { tag: string; properties: Record<string, string> } | null {
+  if (!layerName || layerName.trim() === "") {
+    return null;
+  }
+
+  const parts = layerName.trim().split('/').map(p => p.trim()).filter(p => p !== "");
+  
+  if (parts.length === 0) {
+    return null;
+  }
+
+  const tag = parts[0];
+  const properties: Record<string, string> = {};
+
+  // Apply intelligent parsing based on tag type
+  switch (tag.toLowerCase()) {
+    case 'input':
+      if (parts[1]) {
+        properties.type = parts[1].toLowerCase();
+        if (parts[2]) {
+          properties.placeholder = parts[2];
+        }
+      }
+      break;
+
+    case 'button':
+      if (parts[1]) {
+        properties.className = `btn-${parts[1].toLowerCase()}`;
+        properties.type = parts[1].toLowerCase() === 'submit' ? 'submit' : 'button';
+      }
+      break;
+
+    case 'a':
+      if (parts[1]) {
+        if (parts[1].toLowerCase() === 'external') {
+          properties.target = '_blank';
+          properties.rel = 'noopener noreferrer';
+        }
+        if (parts[2]) {
+          properties.href = parts[2];
+        }
+      }
+      break;
+
+    case 'img':
+      if (parts[1]) {
+        properties.alt = parts[1];
+      }
+      if (parts[2]) {
+        properties.src = parts[2];
+      }
+      break;
+
+    case 'nav':
+      if (parts[1]) {
+        properties.className = `nav-${parts[1].toLowerCase()}`;
+      }
+      break;
+
+    case 'div':
+    case 'section':
+    case 'header':
+    case 'footer':
+    case 'main':
+    case 'aside':
+      if (parts[1]) {
+        properties.className = parts[1].toLowerCase().replace(/\s+/g, '-');
+      }
+      break;
+
+    case 'h1':
+    case 'h2':
+    case 'h3':
+    case 'h4':
+    case 'h5':
+    case 'h6':
+      if (parts[1]) {
+        properties.className = `heading-${parts[1].toLowerCase()}`;
+      }
+      break;
+
+    // Material UI components
+    case 'muibutton':
+      if (parts[1]) {
+        properties.variant = parts[1].toLowerCase();
+      }
+      if (parts[2]) {
+        properties.color = parts[2].toLowerCase();
+      }
+      break;
+
+    case 'muitextfield':
+      if (parts[1]) {
+        properties.variant = parts[1].toLowerCase();
+      }
+      if (parts[2]) {
+        properties.label = parts[2];
+      }
+      break;
+
+    // Chakra UI components
+    case 'chakrabutton':
+      if (parts[1]) {
+        properties.colorScheme = parts[1].toLowerCase();
+      }
+      if (parts[2]) {
+        properties.size = parts[2].toLowerCase();
+      }
+      break;
+
+    default:
+      // For any other tag, use the second part as className if available
+      if (parts[1]) {
+        properties.className = parts[1].toLowerCase().replace(/\s+/g, '-');
+      }
+      break;
+  }
+
+  return { tag, properties };
+}
+
 // Handle UI messages
 penpot.ui.onMessage<PluginMessage>((message) => {
   switch (message.type) {
@@ -502,6 +697,12 @@ penpot.ui.onMessage<PluginMessage>((message) => {
 
     case "export-tags":
       exportTags();
+      break;
+
+    case "auto-tag-selection":
+      if (message.data && message.data.elementIds) {
+        autoTagElements(message.data.elementIds);
+      }
       break;
 
     default:

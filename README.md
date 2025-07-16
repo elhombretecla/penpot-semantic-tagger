@@ -1,15 +1,25 @@
 # Semantic Tagging Plugin for Penpot
 
-An advanced plugin for Penpot that allows assigning semantic tags (HTML and UI components) to design elements, facilitating code export and collaboration between designers and developers.
+Un plugin avanzado para Penpot que permite asignar etiquetas semánticas (HTML y componentes UI) a elementos de diseño, facilitando la exportación de código y la colaboración entre diseñadores y desarrolladores.
 
-## 🚀 Features
+## 🚀 Características Principales
 
-- **Semantic Tagging**: Assign standard HTML tags and components from popular libraries (Material UI, Chakra UI, Bootstrap)
-- **Custom Properties**: Define attributes, CSS classes, events, and specific properties for each element
-- **Data Persistence**: Tags are saved in the Penpot file and persist between sessions
-- **JSON Export**: Export all tags and metadata in structured JSON format
-- **Intuitive Interface**: Responsive UI that adapts to Penpot's theme
-- **Reactive Selection**: Automatically responds to selection changes on the canvas
+### ✨ Nuevas Funcionalidades v2.0
+
+- **🌳 Estructura de Árbol**: Exporta elementos con jerarquía padre-hijo usando la propiedad `children`
+- **📝 Contenido Real**: Extrae automáticamente el texto y URLs de imágenes de los elementos
+- **🎨 Estilos Detallados**: Captura propiedades CSS completas (colores, tipografía, bordes, sombras)
+- **📐 Información de Layout**: Detecta automáticamente propiedades de Flexbox y Grid
+- **🔍 Vista Enriquecida**: Interfaz mejorada que muestra contenido, estilos y layout de cada elemento
+
+### 🎯 Características Existentes
+
+- **Etiquetado Semántico**: Asigna etiquetas HTML estándar y componentes de librerías populares (Material UI, Chakra UI, Bootstrap)
+- **Propiedades Personalizadas**: Define atributos, clases CSS, eventos y propiedades específicas
+- **Persistencia de Datos**: Las etiquetas se guardan en el archivo de Penpot
+- **Exportación JSON Avanzada**: Exporta con estructura de árbol y metadatos completos
+- **Interfaz Intuitiva**: UI responsiva que se adapta al tema de Penpot
+- **Selección Reactiva**: Responde automáticamente a cambios de selección en el canvas
 
 ## 📦 Installation and Setup
 
@@ -139,36 +149,102 @@ npm run build
 - Penpot events (selection, theme, page)
 - Persistence in file metadata
 
-## 📊 Export Format
+## 📊 Formato de Exportación Mejorado v2.0
 
-The exported JSON file includes:
+El archivo JSON exportado ahora incluye dos estructuras:
+
+### 🌳 Estructura de Árbol (Recomendada para Desarrollo)
 
 ```json
 {
   "metadata": {
     "pluginName": "Semantic Tagging Plugin",
-    "version": "1.0.0",
-    "exportDate": "2024-01-15T10:30:00.000Z",
-    "fileName": "My Design",
-    "totalElements": 5
+    "version": "2.0.0",
+    "exportDate": "2025-01-16T10:30:00.000Z",
+    "fileName": "Login Page Design",
+    "pageName": "Desktop Version",
+    "totalElements": 5,
+    "description": "Enhanced export with tree structure, styles, content, and layout information"
   },
-  "elements": [
+  "tree": [
     {
-      "tag": "MuiButton",
+      "tag": "div",
       "properties": {
-        "variant": "contained",
-        "color": "primary",
-        "onClick": "handleSubmit"
+        "className": "profile-card"
       },
-      "elementId": "uuid-123",
-      "elementName": "Submit Button",
-      "elementType": "rectangle",
-      "position": { "x": 100, "y": 200 },
-      "size": { "width": 120, "height": 40 }
+      "elementId": "group-123",
+      "elementName": "Profile Card",
+      "elementType": "group",
+      "styles": {
+        "backgroundColor": "rgba(255, 255, 255, 1)",
+        "borderRadius": "8px",
+        "boxShadow": "0px 4px 12px rgba(0, 0, 0, 0.1)",
+        "width": "320px",
+        "height": "400px"
+      },
+      "layout": {
+        "display": "flex",
+        "flexDirection": "column",
+        "alignItems": "center",
+        "gap": "16px"
+      },
+      "children": [
+        {
+          "tag": "img",
+          "properties": {
+            "alt": "User profile picture"
+          },
+          "elementName": "avatar",
+          "elementType": "image",
+          "imageUrl": "assets/user-avatar.png",
+          "styles": {
+            "width": "80px",
+            "height": "80px",
+            "borderRadius": "50%"
+          },
+          "children": []
+        },
+        {
+          "tag": "h2",
+          "elementName": "user-name",
+          "elementType": "text",
+          "content": "Ana García",
+          "styles": {
+            "fontSize": "18px",
+            "fontWeight": "700",
+            "color": "rgba(0, 0, 0, 0.85)"
+          },
+          "children": []
+        }
+      ]
     }
   ]
 }
 ```
+
+### 📋 Nuevas Propiedades Incluidas
+
+**Contenido y Media:**
+- `content`: Texto real del elemento
+- `imageUrl`: URL del asset de imagen
+
+**Estilos CSS Detallados:**
+- `backgroundColor`, `color`: Colores extraídos de Penpot
+- `fontFamily`, `fontSize`, `fontWeight`: Propiedades tipográficas
+- `border`, `borderRadius`: Información de bordes
+- `boxShadow`: Sombras y efectos
+- `width`, `height`: Dimensiones
+- `opacity`: Transparencia
+
+**Información de Layout:**
+- `display`: flex, grid, etc.
+- `flexDirection`: row, column
+- `justifyContent`, `alignItems`: Alineación
+- `gap`: Espaciado entre elementos
+
+**Jerarquía:**
+- `children`: Array con elementos hijos directos
+- Estructura anidada que refleja la jerarquía real del diseño
 
 ## 🔧 Customization
 

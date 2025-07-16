@@ -6,6 +6,45 @@ interface TagData {
   properties: Record<string, string>;
   elementId: string;
   elementName: string;
+  elementType?: string;
+  content?: string;
+  imageUrl?: string;
+  styles?: StylesData;
+  layout?: LayoutData;
+  children?: TagData[];
+}
+
+interface StylesData {
+  backgroundColor?: string;
+  color?: string;
+  fontFamily?: string;
+  fontSize?: string;
+  fontWeight?: string;
+  textAlign?: string;
+  lineHeight?: string;
+  border?: string;
+  borderRadius?: string;
+  boxShadow?: string;
+  opacity?: string;
+  width?: string;
+  height?: string;
+  position?: string;
+  top?: string;
+  left?: string;
+  right?: string;
+  bottom?: string;
+  margin?: string;
+  padding?: string;
+}
+
+interface LayoutData {
+  display?: string;
+  flexDirection?: string;
+  justifyContent?: string;
+  alignItems?: string;
+  gap?: string;
+  gridTemplateColumns?: string;
+  gridTemplateRows?: string;
 }
 
 interface PluginMessage {
@@ -395,6 +434,36 @@ function formatProperties(properties: Record<string, string>): string {
     .join(" ");
 }
 
+// Format styles for display
+function formatStyles(styles?: StylesData): string {
+  if (!styles) return "";
+  
+  const relevantStyles = Object.entries(styles)
+    .filter(([_, value]) => value && value !== "")
+    .slice(0, 3); // Show only first 3 styles to avoid clutter
+  
+  if (relevantStyles.length === 0) return "";
+  
+  return relevantStyles
+    .map(([key, value]) => `${key}: ${value}`)
+    .join("; ");
+}
+
+// Format layout for display
+function formatLayout(layout?: LayoutData): string {
+  if (!layout) return "";
+  
+  const relevantLayout = Object.entries(layout)
+    .filter(([_, value]) => value && value !== "")
+    .slice(0, 2); // Show only first 2 layout properties
+  
+  if (relevantLayout.length === 0) return "";
+  
+  return relevantLayout
+    .map(([key, value]) => `${key}: ${value}`)
+    .join("; ");
+}
+
 // Update tagged elements list
 function updateTaggedElementsList() {
   if (taggedElements.size === 0) {
@@ -409,15 +478,45 @@ function updateTaggedElementsList() {
     item.className = "tagged-element-item";
     
     const propertiesText = formatProperties(tagData.properties);
+    const stylesText = formatStyles(tagData.styles);
+    const layoutText = formatLayout(tagData.layout);
     const hasProperties = propertiesText.length > 0;
+    const hasStyles = stylesText.length > 0;
+    const hasLayout = layoutText.length > 0;
+    const hasContent = tagData.content && tagData.content.trim().length > 0;
+    const hasImageUrl = tagData.imageUrl && tagData.imageUrl.length > 0;
+    
+    // Build additional info sections
+    let additionalInfo = "";
+    
+    if (hasContent) {
+      const truncatedContent = tagData.content!.length > 30 
+        ? tagData.content!.substring(0, 30) + "..." 
+        : tagData.content!;
+      additionalInfo += `<div class="tagged-element-content">📝 "${truncatedContent}"</div>`;
+    }
+    
+    if (hasImageUrl) {
+      additionalInfo += `<div class="tagged-element-image">🖼️ ${tagData.imageUrl}</div>`;
+    }
+    
+    if (hasStyles) {
+      additionalInfo += `<div class="tagged-element-styles">🎨 ${stylesText}</div>`;
+    }
+    
+    if (hasLayout) {
+      additionalInfo += `<div class="tagged-element-layout">📐 ${layoutText}</div>`;
+    }
     
     item.innerHTML = `
       <div class="tagged-element-info">
         <div class="tagged-element-header">
           <span class="tagged-element-name">${tagData.elementName}</span>
           <span class="tagged-element-tag">${tagData.tag}</span>
+          ${tagData.elementType ? `<span class="tagged-element-type">(${tagData.elementType})</span>` : ''}
         </div>
-        ${hasProperties ? `<div class="tagged-element-properties">${propertiesText}</div>` : ''}
+        ${hasProperties ? `<div class="tagged-element-properties">⚙️ ${propertiesText}</div>` : ''}
+        ${additionalInfo}
       </div>
       <button type="button" class="remove-tag-btn" data-appearance="primary" data-variant="destructive" title="Remove tag" data-element-id="${tagData.elementId}">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5">

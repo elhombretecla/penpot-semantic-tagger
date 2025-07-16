@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Semantic Tagging Plugin</title>
   <script type="module" crossorigin src="/index.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-wujQ4sBB.css">
+  <link rel="stylesheet" crossorigin href="/assets/index-Cb5ivyDn.css">
 </head>
 
 <body>
@@ -22,12 +22,16 @@
     </div>
 
     <div id="tagging-section" class="tagging-section" style="display: none;">
-      <div class="section-header">
-        <h2>Selected Element</h2>
+      <div class="section-header collapsible-header" data-section="tagging">
+        <div class="section-title">
+          <div class="collapse-arrow"></div>
+          <h2>Selected Element</h2>
+        </div>
         <span id="element-name" class="element-badge"></span>
       </div>
-
-      <div class="form-group">
+      
+      <div class="section-content" data-content="tagging">
+        <div class="form-group">
         <label for="tag-select">HTML Tag/Component:</label>
         <div>
           <select id="tag-select" class="select">
@@ -109,12 +113,20 @@
           Remove Tag
         </button>
       </div>
+      </div>
     </div>
 
     <!-- Auto-tagging section -->
     <div class="auto-tagging-section">
-      <h2>Auto-Tagging</h2>
-      <p class="auto-tagging-description">
+      <div class="section-header collapsible-header" data-section="auto-tagging">
+        <div class="section-title">
+          <div class="collapse-arrow"></div>
+          <h2>Smart Auto-Tagging</h2>
+        </div>
+      </div>
+      
+      <div class="section-content" data-content="auto-tagging">
+        <p class="auto-tagging-description">
         Automatically tag elements based on layer names using conventions such as:
         <code>button/primary</code>, <code>input/email</code>, <code>nav/main</code>
       </p>
@@ -133,16 +145,25 @@
       <div id="auto-tag-feedback" class="auto-tag-feedback" style="display: none;">
         <!-- Feedback messages will appear here -->
       </div>
+      </div>
     </div>
 
     <div class="tags-overview">
-      <h2>Tagged Elements</h2>
+      <div class="section-header collapsible-header" data-section="tagged-elements">
+        <div class="section-title">
+          <div class="collapse-arrow"></div>
+          <h2>Tagged Elements</h2>
+        </div>
+      </div>
+      
+      <div class="section-content" data-content="tagged-elements">
       <div id="tagged-elements" class="tagged-elements-list">
         <!-- List of tagged elements -->
       </div>
       <button type="button" id="export-tags" data-appearance="secondary">
         Export Tags (JSON)
       </button>
+      </div>
     </div>
   </div>
 

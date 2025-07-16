@@ -107,6 +107,9 @@ function setupEventListeners() {
   
   // Auto-tagging functionality
   autoTagSelectionBtn.addEventListener("click", autoTagSelection);
+  
+  // Collapsible sections functionality
+  setupCollapsibleSections();
 }
 
 // Handle tag selector changes
@@ -435,6 +438,33 @@ function parseLayerName(layerName: string): { tag: string; properties: Record<st
   }
 
   return { tag, properties };
+}
+
+// Setup collapsible sections functionality
+function setupCollapsibleSections() {
+  const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
+  
+  collapsibleHeaders.forEach(header => {
+    header.addEventListener('click', () => {
+      const sectionName = header.getAttribute('data-section');
+      const content = document.querySelector(`[data-content="${sectionName}"]`) as HTMLElement;
+      const arrow = header.querySelector('.collapse-arrow') as HTMLElement;
+      
+      if (content && arrow) {
+        const isCollapsed = content.classList.contains('collapsed');
+        
+        if (isCollapsed) {
+          // Expand
+          content.classList.remove('collapsed');
+          arrow.classList.remove('collapsed');
+        } else {
+          // Collapse
+          content.classList.add('collapsed');
+          arrow.classList.add('collapsed');
+        }
+      }
+    });
+  });
 }
 
 // Show JSON data for manual copying

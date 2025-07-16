@@ -53,7 +53,6 @@
 
 h2 {
   margin: 0;
-  margin-bottom: 8px;
   font-size: 1rem;
   font-weight: 600;
   color: var(--df-primary);
@@ -131,6 +130,49 @@ h2 {
   flex: 1;
 }
 
+/* Collapsible sections */
+.collapsible-header {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.collapse-arrow {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">%0A  <path%0A    d="m4 6 4 4 4-4"%0A    style="%0A      fill: none;%0A      stroke-width: 1;%0A      stroke: rgb(143, 157, 163);%0A      stroke-opacity: 1;%0A    "%0A  />%0A</svg>%0A');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.collapse-arrow.collapsed {
+  transform: rotate(-90deg);
+}
+
+.section-content {
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+  max-height: 1000px;
+  opacity: 1;
+}
+
+.section-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+}
+
 /* Auto-tagging section */
 .auto-tagging-section {
   margin-top: 1.5rem;
@@ -140,7 +182,7 @@ h2 {
 }
 
 .auto-tagging-section h2 {
-  margin: 0 0 0.75rem 0;
+  margin-bottom: 0;
   font-size: 1rem;
   font-weight: 600;
   color: var(--da-primary);
@@ -211,7 +253,6 @@ h2 {
 }
 
 .tags-overview h2 {
-  margin: 0 0 1rem 0;
   font-size: 1rem;
   font-weight: 600;
 }

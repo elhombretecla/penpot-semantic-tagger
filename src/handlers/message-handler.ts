@@ -174,19 +174,8 @@ export class MessageHandler {
       return;
     }
 
-    // Get all tagged shapes from the current page
-    const taggedShapeIds = Array.from(taggedElements.keys());
-    const selectedShapes: any[] = [];
-
-    taggedShapeIds.forEach(shapeId => {
-      const shape = penpot.currentPage?.getShapeById(shapeId);
-      if (shape) {
-        selectedShapes.push(shape);
-      }
-    });
-
-    // Generate rich JSON using the export service
-    const exportData = this.exportService.generateRichJson(selectedShapes, taggedElements);
+    // Use the same logic as exportTags to get only root shapes
+    const exportData = this.exportService.exportTags(taggedElements);
 
     // Send the rich JSON data to UI for code generation
     penpot.ui.sendMessage({

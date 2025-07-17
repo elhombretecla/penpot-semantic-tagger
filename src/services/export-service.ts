@@ -86,14 +86,11 @@ export class ExportService {
         const taggedChildren: any[] = [];
 
         shape.children.forEach((child: any) => {
-          if (this.hasTaggedDescendants(child, taggedElements)) {
+          // Only process direct children that have tags
+          if (taggedElements.has(child.id)) {
             const childResult = this.processShape(child, taggedElements, false);
             if (childResult) {
-              if (Array.isArray(childResult)) {
-                taggedChildren.push(...childResult);
-              } else {
-                taggedChildren.push(childResult);
-              }
+              taggedChildren.push(childResult);
             }
           }
         });
@@ -143,9 +140,18 @@ export class ExportService {
             children.push(childResult);
           }
         } else {
-          // Child doesn't have tag - skip it to maintain proper hierarchy
-          // This prevents flattening of intermediate containers without tags
-          // The tagged descendants will be processed when we reach them through their tagged parents
+          // Child doesn't have tag - check if it has tagged descendants
+          if (this.hasTaggedDescendants(child, taggedElements)) {
+            // Process the child to get its tagged descendants
+            const childResult = this.processShape(child, taggedElements, false);
+            if (childResult) {
+              if (Array.isArray(childResult)) {
+                children.push(...childResult);
+              } else {
+                children.push(childResult);
+              }
+            }
+          }
         }
       });
     }

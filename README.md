@@ -337,3 +337,6 @@ If you encounter issues or have suggestions:
 - Open an issue in the repository
 - Join the Penpot community
 - Check the official documentation
+
+---
+Made with ❤️ and Open Source | [Piweek](https://piweek.com)

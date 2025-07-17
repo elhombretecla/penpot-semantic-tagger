@@ -124,17 +124,36 @@ The most powerful feature of the plugin: automatically tags elements based on la
 ```
 semantic-tagging-plugin/
 ├── src/
-│   ├── main.ts          # User interface logic
-│   ├── plugin.ts        # Plugin logic (backend)
-│   ├── style.css        # Interface styles
-│   └── vite-env.d.ts    # Type definitions
+│   ├── types/
+│   │   └── index.ts           # TypeScript interfaces and types
+│   ├── core/
+│   │   ├── constants.ts       # Plugin constants and configuration
+│   │   └── plugin-core.ts     # Main plugin orchestrator
+│   ├── utils/
+│   │   ├── color-utils.ts     # Color conversion utilities
+│   │   ├── style-extractor.ts # CSS style extraction
+│   │   ├── layout-analyzer.ts # Layout analysis (flex/grid)
+│   │   └── content-extractor.ts # Content and asset extraction
+│   ├── services/
+│   │   ├── tag-service.ts     # Tag management service
+│   │   ├── export-service.ts  # Export functionality service
+│   │   └── auto-tag-service.ts # Auto-tagging service
+│   ├── handlers/
+│   │   ├── message-handler.ts # UI ↔ Plugin communication
+│   │   └── event-handler.ts   # Penpot events handling
+│   ├── main.ts                # User interface logic
+│   ├── plugin.ts              # Plugin entry point (5 lines)
+│   ├── style.css              # Interface styles
+│   └── vite-env.d.ts          # Type definitions
 ├── public/
-│   └── manifest.json    # Plugin manifest
-├── index.html           # Interface HTML
-├── package.json         # Dependencies and scripts
-├── tsconfig.json        # TypeScript configuration
-├── vite.config.ts       # Vite configuration
-└── README.md           # This file
+│   └── manifest.json          # Plugin manifest
+├── index.html                 # Interface HTML
+├── package.json               # Dependencies and scripts
+├── tsconfig.json              # TypeScript configuration
+├── vite.config.ts             # Vite configuration
+├── ARCHITECTURE.md            # Architecture documentation
+├── REFACTOR_DOCUMENTATION.md  # Refactoring details
+└── README.md                  # This file
 ```
 
 ## 🛠️ Development
@@ -151,20 +170,65 @@ npm run build
 
 ### Plugin Architecture
 
-**Frontend (main.ts)**:
-- Handles user interface
-- Processes forms and events
-- Communicates with backend via postMessage
+The plugin follows a **modular architecture** with clear separation of concerns:
 
-**Backend (plugin.ts)**:
-- Interacts with Penpot API
-- Manages metadata and persistence
-- Handles selection and state changes
+**🎯 Core Layer (`src/core/`)**:
+- `PluginCore`: Main orchestrator that initializes and coordinates all services
+- `constants.ts`: Centralized configuration and plugin constants
 
-**Communication**:
-- Bidirectional messages between UI and plugin
-- Penpot events (selection, theme, page)
-- Persistence in file metadata
+**🔧 Services Layer (`src/services/`)**:
+- `TagService`: Manages semantic tag CRUD operations
+- `ExportService`: Handles JSON export with tree structure generation
+- `AutoTagService`: Intelligent auto-tagging based on layer names
+
+**🛠️ Utils Layer (`src/utils/`)**:
+- `ColorUtils`: Penpot color → CSS conversion utilities
+- `StyleExtractor`: CSS style extraction from Penpot elements
+- `LayoutAnalyzer`: Automatic flex/grid layout detection
+- `ContentExtractor`: Text and image content extraction
+
+**📡 Handlers Layer (`src/handlers/`)**:
+- `MessageHandler`: UI ↔ Plugin communication routing
+- `EventHandler`: Penpot events (selection, page changes, etc.)
+
+**🎨 Frontend (`src/main.ts`)**:
+- User interface logic and form handling
+- Communicates with backend via postMessage API
+
+**🔄 Data Flow**:
+```
+UI → MessageHandler → Services → Utils → Penpot API
+```
+
+**Benefits of New Architecture**:
+- ✅ **Modular**: Each component has a single responsibility
+- ✅ **Testable**: Services and utils can be unit tested independently
+- ✅ **Maintainable**: Easy to locate and modify specific functionality
+- ✅ **Scalable**: New features can be added without affecting existing code
+- ✅ **Reusable**: Utils and services can be reused across different contexts
+
+For detailed architecture documentation, see [`ARCHITECTURE.md`](./ARCHITECTURE.md).
+
+### 🚀 Recent Refactoring (v1.2.0)
+
+The plugin has been completely refactored from a monolithic 1279-line file into a **modular, maintainable architecture**:
+
+**📈 Improvements:**
+- **Maintainability**: Code organized by responsibilities, easy to navigate
+- **Scalability**: New features can be added without affecting existing code
+- **Testability**: Each module can be unit tested independently
+- **Performance**: Better separation of concerns and optimized data flow
+- **Developer Experience**: Clear interfaces, comprehensive documentation
+
+**🔄 Migration:**
+- ✅ **100% Functional Compatibility**: All existing features work exactly the same
+- ✅ **Same UI/UX**: No changes to user interface or workflow
+- ✅ **Same Export Format**: JSON structure remains identical
+- ✅ **Same Performance**: No degradation in plugin speed
+
+**📚 Documentation:**
+- [`REFACTOR_DOCUMENTATION.md`](./REFACTOR_DOCUMENTATION.md): Detailed refactoring process
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md): Complete architecture guide
 
 ## 📊 Enhanced Export Format 
 

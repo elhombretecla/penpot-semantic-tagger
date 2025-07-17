@@ -1,56 +1,5 @@
 import "./style.css";
-
-// Interfaces for the tagging system
-interface TagData {
-  tag: string;
-  properties: Record<string, string>;
-  elementId: string;
-  elementName: string;
-  elementType?: string;
-  content?: string;
-  imageUrl?: string;
-  styles?: StylesData;
-  layout?: LayoutData;
-  children?: TagData[];
-}
-
-interface StylesData {
-  backgroundColor?: string;
-  color?: string;
-  fontFamily?: string;
-  fontSize?: string;
-  fontWeight?: string;
-  textAlign?: string;
-  lineHeight?: string;
-  border?: string;
-  borderRadius?: string;
-  boxShadow?: string;
-  opacity?: string;
-  width?: string;
-  height?: string;
-  position?: string;
-  top?: string;
-  left?: string;
-  right?: string;
-  bottom?: string;
-  margin?: string;
-  padding?: string;
-}
-
-interface LayoutData {
-  display?: string;
-  flexDirection?: string;
-  justifyContent?: string;
-  alignItems?: string;
-  gap?: string;
-  gridTemplateColumns?: string;
-  gridTemplateRows?: string;
-}
-
-interface PluginMessage {
-  type: string;
-  data?: any;
-}
+import { TagData, StylesData, LayoutData, PluginMessage } from './types';
 
 // Global plugin state
 let currentSelection: any[] = [];

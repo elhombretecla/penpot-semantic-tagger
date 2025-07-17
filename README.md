@@ -90,7 +90,7 @@ The plugin automatically suggests properties based on the selected tag:
 - **Remove**: Remove the tag from the selected element
 - **View Tagged**: List all tagged elements in the project
 
-### 5. 🏷️ Smart Auto-Tagging (NEW)
+### 5. 🏷️ Auto-Tagging
 
 The most powerful feature of the plugin: automatically tags elements based on layer names.
 
@@ -112,7 +112,7 @@ The most powerful feature of the plugin: automatically tags elements based on la
 - **Consistency**: Establishes a common "language" between design and development
 - **Scalability**: Perfect for teams and large projects
 
-### 6. 🎨 Code Generation (NEW)
+### 6. 🎨 Code Generation
 
 Transform your tagged design elements into clean, production-ready HTML and CSS code:
 
@@ -143,62 +143,12 @@ Transform your tagged design elements into clean, production-ready HTML and CSS 
 </div>
 ```
 
-For detailed examples and best practices, see [`code-generation-examples.md`](./code-generation-examples.md).
-
 ### 7. Export
 
 - Click **"Export Tags (JSON)"**
 - A modal opens with structured information
 - Copy to clipboard or save to a .json file
 - Includes project metadata, positions, sizes, and properties
-
-## 📁 Project Structure
-
-```
-semantic-tagging-plugin/
-├── src/
-│   ├── types/
-│   │   └── index.ts           # TypeScript interfaces and types
-│   ├── core/
-│   │   ├── constants.ts       # Plugin constants and configuration
-│   │   └── plugin-core.ts     # Main plugin orchestrator
-│   ├── utils/
-│   │   ├── extractors/        # 🆕 Modular style extraction system
-│   │   │   ├── index.ts       # Main extractor interface
-│   │   │   ├── base-extractor.ts      # Common utilities & helpers
-│   │   │   ├── positioning-extractor.ts # Position & dimensions
-│   │   │   ├── typography-extractor.ts  # Complete text properties
-│   │   │   ├── layout-extractor.ts     # Flexbox & auto-layout
-│   │   │   ├── visual-extractor.ts     # Colors, borders & effects
-│   │   │   └── debug-extractor.ts      # Debugging system
-│   │   ├── color-utils.ts     # Color conversion utilities
-│   │   ├── style-extractor.ts # Main style extraction interface
-│   │   ├── layout-analyzer.ts # Layout analysis (flex/grid)
-│   │   └── content-extractor.ts # Content and asset extraction
-│   ├── services/
-│   │   ├── tag-service.ts     # Tag management service
-│   │   ├── export-service.ts  # Export functionality service
-│   │   ├── auto-tag-service.ts # Auto-tagging service
-│   │   └── code-generator.ts  # HTML/CSS code generation service
-│   ├── handlers/
-│   │   ├── message-handler.ts # UI ↔ Plugin communication
-│   │   └── event-handler.ts   # Penpot events handling
-│   ├── main.ts                # User interface logic
-│   ├── plugin.ts              # Plugin entry point
-│   ├── style.css              # Interface styles
-│   └── vite-env.d.ts          # Type definitions
-├── public/
-│   ├── manifest.json          # Plugin manifest
-│   └── icon.png               # Plugin icon
-├── dist/                      # Built plugin files
-├── index.html                 # Interface HTML
-├── package.json               # Dependencies and scripts
-├── tsconfig.json              # TypeScript configuration
-├── vite.config.ts             # Vite configuration
-├── auto-tagging-examples.md   # Auto-tagging examples
-├── code-generation-examples.md # Code generation examples
-└── README.md                  # This file
-```
 
 ## 🛠️ Development
 
@@ -212,78 +162,9 @@ npm run dev
 npm run build
 ```
 
-### Plugin Architecture
-
-The plugin follows a **modular architecture** with clear separation of concerns:
-
-**🎯 Core Layer (`src/core/`)**:
-- `PluginCore`: Main orchestrator that initializes and coordinates all services
-- `constants.ts`: Centralized configuration and plugin constants
-
-**🔧 Services Layer (`src/services/`)**:
-- `TagService`: Manages semantic tag CRUD operations
-- `ExportService`: Handles JSON export with tree structure generation
-- `AutoTagService`: Intelligent auto-tagging based on layer names
-
-**🛠️ Utils Layer (`src/utils/`)**:
-- `ColorUtils`: Penpot color → CSS conversion utilities
-- `StyleExtractor`: Main interface for CSS style extraction
-- `LayoutAnalyzer`: Automatic flex/grid layout detection
-- `ContentExtractor`: Text and image content extraction
-- **🆕 Extractors Module (`src/utils/extractors/`)**:
-  - `BaseExtractor`: Common utilities and helper functions
-  - `PositioningExtractor`: Position, dimensions & transforms
-  - `TypographyExtractor`: Complete text & font properties
-  - `LayoutExtractor`: Flexbox, auto-layout & spacing
-  - `VisualExtractor`: Colors, borders, shadows & effects
-  - `DebugExtractor`: Comprehensive debugging system
-
-**📡 Handlers Layer (`src/handlers/`)**:
-- `MessageHandler`: UI ↔ Plugin communication routing
-- `EventHandler`: Penpot events (selection, page changes, etc.)
-
-**🎨 Frontend (`src/main.ts`)**:
-- User interface logic and form handling
-- Communicates with backend via postMessage API
-
-**🔄 Data Flow**:
-```
-UI → MessageHandler → Services → Utils → Penpot API
-```
-
-**Benefits of New Architecture**:
-- ✅ **Modular**: Each component has a single responsibility
-- ✅ **Testable**: Services and utils can be unit tested independently
-- ✅ **Maintainable**: Easy to locate and modify specific functionality
-- ✅ **Scalable**: New features can be added without affecting existing code
-- ✅ **Reusable**: Utils and services can be reused across different contexts
-
-For detailed architecture documentation, see [`ARCHITECTURE.md`](./ARCHITECTURE.md).
-
-### 🚀 Recent Refactoring (v1.2.0)
-
-The plugin has been completely refactored from a monolithic 1279-line file into a **modular, maintainable architecture**:
-
-**📈 Improvements:**
-- **Maintainability**: Code organized by responsibilities, easy to navigate
-- **Scalability**: New features can be added without affecting existing code
-- **Testability**: Each module can be unit tested independently
-- **Performance**: Better separation of concerns and optimized data flow
-- **Developer Experience**: Clear interfaces, comprehensive documentation
-
-**🔄 Migration:**
-- ✅ **100% Functional Compatibility**: All existing features work exactly the same
-- ✅ **Same UI/UX**: No changes to user interface or workflow
-- ✅ **Same Export Format**: JSON structure remains identical
-- ✅ **Same Performance**: No degradation in plugin speed
-
-**📚 Documentation:**
-- [`REFACTOR_DOCUMENTATION.md`](./REFACTOR_DOCUMENTATION.md): Detailed refactoring process
-- [`ARCHITECTURE.md`](./ARCHITECTURE.md): Complete architecture guide
-
 ## 📊 Enhanced Export Format 
 
-The exported JSON file now includes a clean structure:
+The exported JSON file includes a clean structure:
 
 ### 🌳 Tree Structure (Recommended for Development)
 
@@ -354,37 +235,6 @@ The exported JSON file now includes a clean structure:
 }
 ```
 
-### 📋 New Properties Included
-
-**Content and Media:**
-- `content`: Real text extracted from the element
-- `imageUrl`: Image asset URL
-
-**Consolidated CSS Styles (single source of truth):**
-- **Positioning**: `left`, `top`, `width`, `height` (always included)
-- **Colors**: `backgroundColor`, `color` extracted from Penpot
-- **Typography**: `fontFamily`, `fontSize`, `fontWeight`, `textAlign`, `lineHeight`
-- **Borders**: `border`, `borderRadius`
-- **Effects**: `boxShadow`, `opacity`
-- **Spacing**: `padding`, `margin`
-
-**Layout Information (automatically inferred):**
-- `display`: flex, grid, etc.
-- `flexDirection`: row, column
-- `justifyContent`, `alignItems`: Alignment
-- `gap`: Spacing between elements
-
-**Hierarchy:**
-- `children`: Array with direct child elements
-- Nested structure that reflects the real design hierarchy
-- **Unique IDs**: Each element has its unique `elementId` from Penpot
-
-### 🎯 Latest Improvements
-
-1. **No Redundancy**: Only `tree` structure, removed duplicate `elements` list
-2. **Consolidated Styles**: All visual information in single `styles` object
-3. **Unique IDs**: Each element maintains its real Penpot ID
-4. **Complete Content**: Automatic extraction of text and images
 
 ## 🔧 Customization
 

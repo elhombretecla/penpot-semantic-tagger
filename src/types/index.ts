@@ -13,17 +13,7 @@ export interface TagData {
 }
 
 export interface StylesData {
-  backgroundColor?: string;
-  color?: string;
-  fontFamily?: string;
-  fontSize?: string;
-  fontWeight?: string;
-  textAlign?: string;
-  lineHeight?: string;
-  border?: string;
-  borderRadius?: string;
-  boxShadow?: string;
-  opacity?: string;
+  // Dimensions and positioning
   width?: string;
   height?: string;
   position?: string;
@@ -31,8 +21,64 @@ export interface StylesData {
   left?: string;
   right?: string;
   bottom?: string;
+  zIndex?: string;
+  
+  // Colors and backgrounds
+  backgroundColor?: string;
+  backgroundImage?: string;
+  color?: string;
+  
+  // Typography
+  fontFamily?: string;
+  fontSize?: string;
+  fontWeight?: string;
+  fontStyle?: string;
+  textAlign?: string;
+  lineHeight?: string;
+  letterSpacing?: string;
+  textDecoration?: string;
+  textTransform?: string;
+  
+  // Spacing
   margin?: string;
+  marginTop?: string;
+  marginRight?: string;
+  marginBottom?: string;
+  marginLeft?: string;
   padding?: string;
+  paddingTop?: string;
+  paddingRight?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
+  
+  // Flexbox and layout
+  display?: string;
+  flexDirection?: string;
+  flexWrap?: string;
+  justifyContent?: string;
+  alignItems?: string;
+  alignContent?: string;
+  alignSelf?: string;
+  flexGrow?: string;
+  flexShrink?: string;
+  flexBasis?: string;
+  gap?: string;
+  rowGap?: string;
+  columnGap?: string;
+  
+  // Borders and effects
+  border?: string;
+  borderRadius?: string;
+  boxShadow?: string;
+  boxSizing?: string;
+  
+  // Transform and visual effects
+  transform?: string;
+  opacity?: string;
+  visibility?: string;
+  overflow?: string;
+  filter?: string;
+  mixBlendMode?: string;
 }
 
 export interface LayoutData {

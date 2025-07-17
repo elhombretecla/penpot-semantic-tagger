@@ -61,7 +61,7 @@ export class ExportService {
 
     // Check children recursively
     if (shape.children && Array.isArray(shape.children)) {
-      return shape.children.some(child => this.hasTaggedDescendants(child, taggedElements));
+      return shape.children.some((child: any) => this.hasTaggedDescendants(child, taggedElements));
     }
 
     return false;

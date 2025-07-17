@@ -163,8 +163,16 @@ semantic-tagging-plugin/
 │   │   ├── constants.ts       # Plugin constants and configuration
 │   │   └── plugin-core.ts     # Main plugin orchestrator
 │   ├── utils/
+│   │   ├── extractors/        # 🆕 Modular style extraction system
+│   │   │   ├── index.ts       # Main extractor interface
+│   │   │   ├── base-extractor.ts      # Common utilities & helpers
+│   │   │   ├── positioning-extractor.ts # Position & dimensions
+│   │   │   ├── typography-extractor.ts  # Complete text properties
+│   │   │   ├── layout-extractor.ts     # Flexbox & auto-layout
+│   │   │   ├── visual-extractor.ts     # Colors, borders & effects
+│   │   │   └── debug-extractor.ts      # Debugging system
 │   │   ├── color-utils.ts     # Color conversion utilities
-│   │   ├── style-extractor.ts # CSS style extraction
+│   │   ├── style-extractor.ts # Main style extraction interface
 │   │   ├── layout-analyzer.ts # Layout analysis (flex/grid)
 │   │   └── content-extractor.ts # Content and asset extraction
 │   ├── services/
@@ -176,17 +184,19 @@ semantic-tagging-plugin/
 │   │   ├── message-handler.ts # UI ↔ Plugin communication
 │   │   └── event-handler.ts   # Penpot events handling
 │   ├── main.ts                # User interface logic
-│   ├── plugin.ts              # Plugin entry point (5 lines)
+│   ├── plugin.ts              # Plugin entry point
 │   ├── style.css              # Interface styles
 │   └── vite-env.d.ts          # Type definitions
 ├── public/
-│   └── manifest.json          # Plugin manifest
+│   ├── manifest.json          # Plugin manifest
+│   └── icon.png               # Plugin icon
+├── dist/                      # Built plugin files
 ├── index.html                 # Interface HTML
 ├── package.json               # Dependencies and scripts
 ├── tsconfig.json              # TypeScript configuration
 ├── vite.config.ts             # Vite configuration
-├── ARCHITECTURE.md            # Architecture documentation
-├── REFACTOR_DOCUMENTATION.md  # Refactoring details
+├── auto-tagging-examples.md   # Auto-tagging examples
+├── code-generation-examples.md # Code generation examples
 └── README.md                  # This file
 ```
 
@@ -217,9 +227,16 @@ The plugin follows a **modular architecture** with clear separation of concerns:
 
 **🛠️ Utils Layer (`src/utils/`)**:
 - `ColorUtils`: Penpot color → CSS conversion utilities
-- `StyleExtractor`: CSS style extraction from Penpot elements
+- `StyleExtractor`: Main interface for CSS style extraction
 - `LayoutAnalyzer`: Automatic flex/grid layout detection
 - `ContentExtractor`: Text and image content extraction
+- **🆕 Extractors Module (`src/utils/extractors/`)**:
+  - `BaseExtractor`: Common utilities and helper functions
+  - `PositioningExtractor`: Position, dimensions & transforms
+  - `TypographyExtractor`: Complete text & font properties
+  - `LayoutExtractor`: Flexbox, auto-layout & spacing
+  - `VisualExtractor`: Colors, borders, shadows & effects
+  - `DebugExtractor`: Comprehensive debugging system
 
 **📡 Handlers Layer (`src/handlers/`)**:
 - `MessageHandler`: UI ↔ Plugin communication routing

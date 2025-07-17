@@ -90,6 +90,17 @@ export function extractComprehensiveStyles(shape: any, _isInFlexContainer: boole
     const typographyStyles = extractTypography(shape);
     Object.assign(allStyles, typographyStyles);
 
+    // 🎨 SPECIAL HANDLING FOR TEXT ELEMENTS
+    // For text elements, if we have both backgroundColor and color, prioritize color and remove backgroundColor
+    if (shape?.type === 'text' && allStyles.backgroundColor && allStyles.color) {
+      delete allStyles.backgroundColor;
+    }
+    
+    // For text elements, remove overflow: hidden as it can hide the text content
+    if (shape?.type === 'text' && allStyles.overflow === 'hidden') {
+      delete allStyles.overflow;
+    }
+
     // 🔧 LAYOUT STYLES
     // Priority: Flex layout > Layout child > Legacy layout
     const flexLayoutStyles = extractFlexLayout(shape);

@@ -7,7 +7,7 @@ import { StylesData } from '../../types';
 import { isInFlexContainer } from './base-extractor';
 import { extractPositioning } from './positioning-extractor';
 import { extractTypography } from './typography-extractor';
-import { extractFlexLayout, extractLayoutChild, extractLegacyLayout } from './layout-extractor';
+import { extractFlexLayout, extractLayoutChild, extractGridLayout, extractLayoutCell, extractLegacyLayout } from './layout-extractor';
 import { 
   extractBackground, 
   extractBorders, 
@@ -102,12 +102,23 @@ export function extractComprehensiveStyles(shape: any, _isInFlexContainer: boole
     }
 
     // 🔧 LAYOUT STYLES
-    // Priority: Flex layout > Layout child > Legacy layout
+    // Priority: Grid layout > Flex layout > Layout child > Layout cell > Legacy layout
+    
+    // Grid layout (highest priority for containers)
+    const gridLayoutStyles = extractGridLayout(shape);
+    Object.assign(allStyles, gridLayoutStyles);
+
+    // Flex layout (for flex containers)
     const flexLayoutStyles = extractFlexLayout(shape);
     Object.assign(allStyles, flexLayoutStyles);
 
+    // Layout child properties (for elements inside flex/grid containers)
     const layoutChildStyles = extractLayoutChild(shape);
     Object.assign(allStyles, layoutChildStyles);
+
+    // Layout cell properties (for elements inside grid containers)
+    const layoutCellStyles = extractLayoutCell(shape);
+    Object.assign(allStyles, layoutCellStyles);
 
     // Legacy layout (only apply properties not already set)
     const legacyLayoutStyles = extractLegacyLayout(shape);
@@ -117,6 +128,39 @@ export function extractComprehensiveStyles(shape: any, _isInFlexContainer: boole
         allStyles[key] = legacyLayoutStyles[typedKey]!;
       }
     });
+
+    // 📏 FLEXIBLE SIZING HANDLING
+    // If element has flexible sizing properties, remove fixed dimensions
+    const layoutChild = shape?.layoutChild;
+    const grid = shape?.grid;
+    
+    // Check sizing properties from different sources
+    const childHorizontalSizing = layoutChild?.horizontalSizing;
+    const childVerticalSizing = layoutChild?.verticalSizing;
+    const gridHorizontalSizing = grid?.horizontalSizing;
+    const gridVerticalSizing = grid?.verticalSizing;
+    
+    // Determine effective sizing (prioritize layoutChild over grid)
+    const effectiveHorizontalSizing = childHorizontalSizing || gridHorizontalSizing;
+    const effectiveVerticalSizing = childVerticalSizing || gridVerticalSizing;
+    
+    // Only consider truly flexible sizing values (not 'fix' which means fixed size)
+    const hasFlexibleHorizontalSizing = effectiveHorizontalSizing && 
+      ['fill', 'auto', 'fit-content'].includes(effectiveHorizontalSizing);
+    const hasFlexibleVerticalSizing = effectiveVerticalSizing && 
+      ['fill', 'auto', 'fit-content'].includes(effectiveVerticalSizing);
+
+    // Remove fixed width if horizontal sizing is flexible (but keep if it's 'auto' or 'fit-content' as those are set by layout extractor)
+    if (hasFlexibleHorizontalSizing && allStyles.width && 
+        !allStyles.width.includes('auto') && !allStyles.width.includes('fit-content') && !allStyles.width.includes('%')) {
+      delete allStyles.width;
+    }
+
+    // Remove fixed height if vertical sizing is flexible (but keep if it's 'auto' or 'fit-content' as those are set by layout extractor)
+    if (hasFlexibleVerticalSizing && allStyles.height && 
+        !allStyles.height.includes('auto') && !allStyles.height.includes('fit-content') && !allStyles.height.includes('%')) {
+      delete allStyles.height;
+    }
 
     // 📱 RESPONSIVE BEHAVIOR
     // For text elements in flex containers, remove absolute positioning
@@ -146,6 +190,8 @@ export {
   extractTypography,
   extractFlexLayout,
   extractLayoutChild,
+  extractGridLayout,
+  extractLayoutCell,
   extractLegacyLayout,
   extractBackground,
   extractBorders,

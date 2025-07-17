@@ -107,11 +107,6 @@ The most powerful feature of the plugin: automatically tags elements based on la
 4. Click "🏷️ Auto-Tag Selection"
 5. The plugin will recursively process all elements and their children
 
-**Benefits:**
-- **10x Productivity**: Tag complete components in seconds
-- **Consistency**: Establishes a common "language" between design and development
-- **Scalability**: Perfect for teams and large projects
-
 ### 6. 🎨 Code Generation
 
 Transform your tagged design elements into clean, production-ready HTML and CSS code:

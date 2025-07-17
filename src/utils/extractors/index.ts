@@ -13,6 +13,7 @@ import {
   extractBorders, 
   extractBorderRadius, 
   extractEffects, 
+  extractImageStyles,
   extractMiscVisual 
 } from './visual-extractor';
 import { debugElement } from './debug-extractor';
@@ -82,6 +83,10 @@ export function extractComprehensiveStyles(shape: any, _isInFlexContainer: boole
 
     const effectStyles = extractEffects(shape);
     Object.assign(allStyles, effectStyles);
+
+    // 🖼️ IMAGE STYLES (for image elements and image fills)
+    const imageStyles = extractImageStyles(shape);
+    Object.assign(allStyles, imageStyles);
 
     const miscVisualStyles = extractMiscVisual(shape);
     Object.assign(allStyles, miscVisualStyles);
@@ -197,6 +202,7 @@ export {
   extractBorders,
   extractBorderRadius,
   extractEffects,
+  extractImageStyles,
   extractMiscVisual,
   debugElement
 };

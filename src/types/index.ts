@@ -26,6 +26,7 @@ export interface StylesData {
   // Colors and backgrounds
   backgroundColor?: string;
   backgroundImage?: string;
+  background?: string;
   color?: string;
   
   // Typography
@@ -38,6 +39,14 @@ export interface StylesData {
   letterSpacing?: string;
   textDecoration?: string;
   textTransform?: string;
+  direction?: string;
+  
+  // Text behavior and layout
+  whiteSpace?: string;
+  overflowWrap?: string;
+  webkitBackgroundClip?: string;
+  webkitTextFillColor?: string;
+  backgroundClip?: string;
   
   // Spacing
   margin?: string;

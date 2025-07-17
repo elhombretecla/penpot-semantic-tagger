@@ -45,6 +45,8 @@ npm run dev
    - Click "Install Plugin"
    - Paste the manifest URL: `http://localhost:4400/manifest.json`
    - The plugin will appear in your plugins panel
+     
+<img width="2128" height="1892" alt="plugin-tags" src="https://github.com/user-attachments/assets/ab58b59c-cbc0-480b-8025-1d5bdc6af2cd" />
 
 ## 🎯 How to Use the Plugin
 

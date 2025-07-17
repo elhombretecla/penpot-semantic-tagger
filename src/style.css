@@ -384,4 +384,94 @@ h2 {
   .actions button[data-appearance="primary"] {
     flex: none;
   }
+}/*
+ Code Generation Section */
+.code-generation-section {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--db-quaternary);
+}
+
+.code-generation-section h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--df-primary);
+}
+
+.code-generation-controls {
+  margin-bottom: 1rem;
+}
+
+.code-output {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.code-block {
+  border: 1px solid var(--db-quaternary);
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--db-secondary);
+  border-bottom: 1px solid var(--db-quaternary);
+}
+
+.code-header h3 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--df-primary);
+}
+
+.code-textarea {
+  width: 100%;
+  min-height: 200px;
+  max-height: 400px;
+  padding: 1rem;
+  border: none;
+  background: var(--db-primary);
+  color: var(--df-primary);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.code-textarea:focus {
+  outline: 2px solid var(--da-primary);
+  outline-offset: -2px;
+}
+
+.code-textarea::placeholder {
+  color: var(--df-tertiary);
+  font-style: italic;
+}
+
+/* Copy button states */
+.copy-success {
+  background: var(--da-success) !important;
+  color: white !important;
+}
+
+/* Responsive adjustments for code section */
+@media (max-width: 480px) {
+  .code-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  
+  .code-textarea {
+    font-size: 0.7rem;
+    min-height: 150px;
+  }
 }

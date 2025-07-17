@@ -112,7 +112,40 @@ The most powerful feature of the plugin: automatically tags elements based on la
 - **Consistency**: Establishes a common "language" between design and development
 - **Scalability**: Perfect for teams and large projects
 
-### 6. Export
+### 6. 🎨 Code Generation (NEW)
+
+Transform your tagged design elements into clean, production-ready HTML and CSS code:
+
+**How to use:**
+1. Tag your design elements using any of the methods above
+2. Click **"Generate HTML & CSS"** in the Code Generation section
+3. Review the generated code in the HTML and CSS text areas
+4. Click **"Copy HTML"** or **"Copy CSS"** to copy to clipboard
+5. Paste directly into your project
+
+**Features:**
+- **Clean HTML Structure**: Semantic, properly nested HTML elements
+- **Production-Ready CSS**: Organized styles with proper class names
+- **Automatic Style Extraction**: Colors, typography, spacing, layout properties
+- **Smart Class Generation**: Uses your custom className or generates from element names
+- **Flexbox & Grid Support**: Automatically detects and generates layout CSS
+- **Copy to Clipboard**: One-click copying with visual feedback
+
+**Example Output:**
+```html
+<div class="hero-section">
+  <h1 class="main-heading">Welcome to Our Platform</h1>
+  <p class="hero-description">Build amazing experiences...</p>
+  <div class="cta-buttons">
+    <button class="btn-primary" type="button">Get Started</button>
+    <button class="btn-secondary" type="button">Learn More</button>
+  </div>
+</div>
+```
+
+For detailed examples and best practices, see [`code-generation-examples.md`](./code-generation-examples.md).
+
+### 7. Export
 
 - Click **"Export Tags (JSON)"**
 - A modal opens with structured information
@@ -137,7 +170,8 @@ semantic-tagging-plugin/
 │   ├── services/
 │   │   ├── tag-service.ts     # Tag management service
 │   │   ├── export-service.ts  # Export functionality service
-│   │   └── auto-tag-service.ts # Auto-tagging service
+│   │   ├── auto-tag-service.ts # Auto-tagging service
+│   │   └── code-generator.ts  # HTML/CSS code generation service
 │   ├── handlers/
 │   │   ├── message-handler.ts # UI ↔ Plugin communication
 │   │   └── event-handler.ts   # Penpot events handling

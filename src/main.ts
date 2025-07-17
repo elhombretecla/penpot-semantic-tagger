@@ -1,5 +1,6 @@
 import "./style.css";
 import { TagData, StylesData, LayoutData, PluginMessage } from './types';
+import { CodeGenerator, CodeGeneratorNode } from './services/code-generator';
 
 // Global plugin state
 let currentSelection: any[] = [];
@@ -26,6 +27,16 @@ const exportTagsBtn = document.getElementById("export-tags")!;
 const autoTagEnabledCheckbox = document.getElementById("auto-tag-enabled") as HTMLInputElement;
 const autoTagSelectionBtn = document.getElementById("auto-tag-selection")!;
 const autoTagFeedback = document.getElementById("auto-tag-feedback")!;
+
+// Code generation elements
+const generateCodeBtn = document.getElementById("generate-code")!;
+const htmlOutput = document.getElementById("html-output") as HTMLTextAreaElement;
+const cssOutput = document.getElementById("css-output") as HTMLTextAreaElement;
+const copyHtmlBtn = document.getElementById("copy-html")!;
+const copyCssBtn = document.getElementById("copy-css")!;
+
+// Initialize code generator
+const codeGenerator = new CodeGenerator();
 
 // Initialization
 function init() {
@@ -56,6 +67,11 @@ function setupEventListeners() {
   
   // Auto-tagging functionality
   autoTagSelectionBtn.addEventListener("click", autoTagSelection);
+  
+  // Code generation functionality
+  generateCodeBtn.addEventListener("click", generateCode);
+  copyHtmlBtn.addEventListener("click", () => copyToClipboard(htmlOutput.value, "HTML"));
+  copyCssBtn.addEventListener("click", () => copyToClipboard(cssOutput.value, "CSS"));
   
   // Collapsible sections functionality
   setupCollapsibleSections();
@@ -390,6 +406,137 @@ function parseLayerName(layerName: string): { tag: string; properties: Record<st
   return { tag, properties };
 }
 */
+
+// Generate HTML and CSS code from tagged elements
+function generateCode() {
+  if (taggedElements.size === 0) {
+    showCodeGenerationFeedback("No tagged elements found. Please tag some elements first.", "error");
+    return;
+  }
+
+  try {
+    // Request rich JSON data from the plugin
+    const message: PluginMessage = {
+      type: "generate-rich-json"
+    };
+    
+    parent.postMessage(message, "*");
+  } catch (error) {
+    console.error("Error generating code:", error);
+    showCodeGenerationFeedback("Error generating code. Please try again.", "error");
+  }
+}
+
+// Process the rich JSON data and generate HTML/CSS
+function processRichJsonForCodeGeneration(exportData: any) {
+  try {
+    if (!exportData || !exportData.tree || exportData.tree.length === 0) {
+      showCodeGenerationFeedback("No valid data found for code generation.", "error");
+      return;
+    }
+
+    // Convert the export data tree to CodeGeneratorNode format
+    const codeNodes: CodeGeneratorNode[] = exportData.tree.map((node: any) => convertToCodeGeneratorNode(node));
+
+    // Generate HTML and CSS
+    const htmlCode = codeGenerator.generateHtml(codeNodes);
+    const cssCode = codeGenerator.generateCss(codeNodes);
+
+    // Update the UI
+    htmlOutput.value = htmlCode;
+    cssOutput.value = cssCode;
+
+    showCodeGenerationFeedback(`✅ Code generated successfully! ${codeNodes.length} root element(s) processed.`, "success");
+  } catch (error) {
+    console.error("Error processing rich JSON:", error);
+    showCodeGenerationFeedback("Error processing data for code generation.", "error");
+  }
+}
+
+// Convert export node to CodeGeneratorNode format
+function convertToCodeGeneratorNode(node: any): CodeGeneratorNode {
+  const codeNode: CodeGeneratorNode = {
+    tag: node.tag,
+    elementName: node.elementName,
+    attributes: node.attributes || {},
+    styles: node.styles || {},
+    content: node.content
+  };
+
+  // Process children recursively
+  if (node.children && Array.isArray(node.children) && node.children.length > 0) {
+    codeNode.children = node.children.map((child: any) => convertToCodeGeneratorNode(child));
+  }
+
+  return codeNode;
+}
+
+// Copy content to clipboard
+async function copyToClipboard(content: string, type: string) {
+  if (!content || content.trim() === '') {
+    showCodeGenerationFeedback(`No ${type} code to copy. Generate code first.`, "error");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(content);
+    
+    // Visual feedback
+    const button = type === "HTML" ? copyHtmlBtn : copyCssBtn;
+    const originalText = button.textContent;
+    
+    button.textContent = "Copied!";
+    button.classList.add("copy-success");
+    
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.classList.remove("copy-success");
+    }, 2000);
+
+    showCodeGenerationFeedback(`${type} code copied to clipboard!`, "success");
+  } catch (error) {
+    console.error("Error copying to clipboard:", error);
+    
+    // Fallback: select the text in the textarea
+    const textarea = type === "HTML" ? htmlOutput : cssOutput;
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile devices
+    
+    try {
+      document.execCommand('copy');
+      showCodeGenerationFeedback(`${type} code copied to clipboard!`, "success");
+    } catch (fallbackError) {
+      showCodeGenerationFeedback("Unable to copy to clipboard. Please select and copy manually.", "error");
+    }
+  }
+}
+
+// Show feedback message for code generation
+function showCodeGenerationFeedback(message: string, type: "success" | "error" | "info") {
+  // Create or update feedback element
+  let feedbackElement = document.getElementById("code-generation-feedback");
+  
+  if (!feedbackElement) {
+    feedbackElement = document.createElement("div");
+    feedbackElement.id = "code-generation-feedback";
+    feedbackElement.className = "auto-tag-feedback"; // Reuse existing styles
+    
+    // Insert after the generate button
+    const controlsSection = document.querySelector(".code-generation-controls");
+    if (controlsSection) {
+      controlsSection.appendChild(feedbackElement);
+    }
+  }
+  
+  feedbackElement.textContent = message;
+  feedbackElement.className = `auto-tag-feedback ${type}`;
+  feedbackElement.style.display = "block";
+  
+  // Hide after 5 seconds
+  setTimeout(() => {
+    feedbackElement.style.display = "none";
+  }, 5000);
+}
 
 // Setup collapsible sections functionality
 function setupCollapsibleSections() {
@@ -730,6 +877,10 @@ window.addEventListener("message", (event) => {
         showAutoTagFeedback("ℹ️ No elements with valid names were found to tag.", "info");
       }
       updateTaggedElementsList();
+    }
+    // Rich JSON data received for code generation
+    else if (message.type === "rich-json-data") {
+      processRichJsonForCodeGeneration(message.data);
     }
   }
 });

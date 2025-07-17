@@ -164,6 +164,46 @@
       </button>
       </div>
     </div>
+
+    <!-- Code Generation Section -->
+    <div class="code-generation-section">
+      <div class="section-header collapsible-header" data-section="code-generation">
+        <div class="section-title">
+          <div class="collapse-arrow"></div>
+          <h2>Generated Code</h2>
+        </div>
+      </div>
+      
+      <div class="section-content" data-content="code-generation">
+        <div class="code-generation-controls">
+          <button type="button" id="generate-code" data-appearance="primary">
+            Generate HTML & CSS
+          </button>
+        </div>
+        
+        <div class="code-output">
+          <div class="code-block">
+            <div class="code-header">
+              <h3>HTML</h3>
+              <button type="button" id="copy-html" data-appearance="secondary">
+                Copy HTML
+              </button>
+            </div>
+            <textarea id="html-output" class="code-textarea" readonly placeholder="Generated HTML will appear here..."></textarea>
+          </div>
+          
+          <div class="code-block">
+            <div class="code-header">
+              <h3>CSS</h3>
+              <button type="button" id="copy-css" data-appearance="secondary">
+                Copy CSS
+              </button>
+            </div>
+            <textarea id="css-output" class="code-textarea" readonly placeholder="Generated CSS will appear here..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="/src/main.ts"></script>

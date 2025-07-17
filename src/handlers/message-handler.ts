@@ -38,6 +38,10 @@ export class MessageHandler {
         this.handleAutoTagSelection(message.data);
         break;
 
+      case "generate-rich-json":
+        this.handleGenerateRichJson();
+        break;
+
       default:
         console.warn("Unrecognized message:", message.type);
     }
@@ -153,5 +157,42 @@ export class MessageHandler {
       // Save to file
       this.tagService.saveTagsToFile();
     }
+  }
+
+  /**
+   * Handle generate rich JSON message for code generation
+   */
+  private handleGenerateRichJson(): void {
+    const taggedElements = this.tagService.getTaggedElements();
+    
+    if (taggedElements.size === 0) {
+      penpot.ui.sendMessage({
+        source: "penpot",
+        type: "rich-json-data",
+        data: { metadata: {}, tree: [] }
+      });
+      return;
+    }
+
+    // Get all tagged shapes from the current page
+    const taggedShapeIds = Array.from(taggedElements.keys());
+    const selectedShapes: any[] = [];
+
+    taggedShapeIds.forEach(shapeId => {
+      const shape = penpot.currentPage?.getShapeById(shapeId);
+      if (shape) {
+        selectedShapes.push(shape);
+      }
+    });
+
+    // Generate rich JSON using the export service
+    const exportData = this.exportService.generateRichJson(selectedShapes, taggedElements);
+
+    // Send the rich JSON data to UI for code generation
+    penpot.ui.sendMessage({
+      source: "penpot",
+      type: "rich-json-data",
+      data: exportData
+    });
   }
 }

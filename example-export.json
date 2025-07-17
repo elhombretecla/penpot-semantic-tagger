@@ -1,32 +1,29 @@
 {
   "metadata": {
     "pluginName": "Semantic Tagging Plugin",
-    "version": "2.0.0",
-    "exportDate": "2025-01-16T10:30:00.000Z",
+    "version": "1.2.0",
+    "exportDate": "2025-01-17T10:30:00.000Z",
     "fileName": "Header Navigation Design",
-    "pageName": "Desktop Version",
-    "totalElements": 4,
-    "description": "Enhanced export with tree structure, styles, content, and layout information"
+    "pageName": "Desktop Version"
   },
   "tree": [
     {
       "tag": "header",
-      "properties": {
-        "className": "header-container"
-      },
-      "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c06e",
       "elementName": "header container",
       "elementType": "board",
+      "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c06e",
+      "attributes": {
+        "className": "header-container"
+      },
       "styles": {
-        "width": "1319.99px",
-        "height": "61.04px",
+        "width": "1320px",
+        "height": "61px",
+        "position": "absolute",
         "left": "0px",
         "top": "0px",
         "backgroundColor": "rgba(255, 255, 255, 1)",
         "border": "1px solid rgba(224, 224, 224, 1)",
-        "boxShadow": "0px 2px 4px rgba(0, 0, 0, 0.1)"
-      },
-      "layout": {
+        "boxShadow": "0px 2px 4px 0px rgba(0, 0, 0, 0.1)",
         "display": "flex",
         "flexDirection": "row",
         "justifyContent": "space-between",
@@ -36,37 +33,37 @@
       "children": [
         {
           "tag": "a",
-          "properties": {
+          "elementName": "logo",
+          "elementType": "text",
+          "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c06f",
+          "attributes": {
             "href": "/",
             "className": "logo-link"
           },
-          "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c06f",
-          "elementName": "logo",
-          "elementType": "text",
           "content": "LOGO",
           "styles": {
+            "position": "absolute",
+            "left": "32px",
+            "top": "18px",
             "fontSize": "24px",
             "fontWeight": "700",
             "color": "rgba(0, 0, 0, 1)",
-            "fontFamily": "Inter",
-            "left": "32px",
-            "top": "18px"
+            "fontFamily": "Inter"
           },
           "children": []
         },
         {
           "tag": "nav",
-          "properties": {
-            "className": "main-navigation"
-          },
-          "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c070",
           "elementName": "main navigation",
           "elementType": "group",
-          "styles": {
-            "left": "400px",
-            "top": "15px"
+          "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c070",
+          "attributes": {
+            "className": "main-navigation"
           },
-          "layout": {
+          "styles": {
+            "position": "absolute",
+            "left": "400px",
+            "top": "15px",
             "display": "flex",
             "flexDirection": "row",
             "gap": "32px",
@@ -75,15 +72,16 @@
           "children": [
             {
               "tag": "a",
-              "properties": {
+              "elementName": "home link",
+              "elementType": "text",
+              "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c071",
+              "attributes": {
                 "href": "/home",
                 "className": "nav-link"
               },
-              "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c071",
-              "elementName": "home link",
-              "elementType": "text",
               "content": "Home",
               "styles": {
+                "position": "absolute",
                 "fontSize": "16px",
                 "fontWeight": "400",
                 "color": "rgba(51, 51, 51, 1)",
@@ -93,15 +91,16 @@
             },
             {
               "tag": "a",
-              "properties": {
+              "elementName": "about link",
+              "elementType": "text",
+              "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c072",
+              "attributes": {
                 "href": "/about",
                 "className": "nav-link"
               },
-              "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c072",
-              "elementName": "about link",
-              "elementType": "text",
               "content": "About",
               "styles": {
+                "position": "absolute",
                 "fontSize": "16px",
                 "fontWeight": "400",
                 "color": "rgba(51, 51, 51, 1)",
@@ -111,15 +110,16 @@
             },
             {
               "tag": "a",
-              "properties": {
+              "elementName": "contact link",
+              "elementType": "text",
+              "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c073",
+              "attributes": {
                 "href": "/contact",
                 "className": "nav-link"
               },
-              "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c073",
-              "elementName": "contact link",
-              "elementType": "text",
               "content": "Contact",
               "styles": {
+                "position": "absolute",
                 "fontSize": "16px",
                 "fontWeight": "400",
                 "color": "rgba(51, 51, 51, 1)",
@@ -131,22 +131,22 @@
         },
         {
           "tag": "button",
-          "properties": {
+          "elementName": "get started button",
+          "elementType": "rect",
+          "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c074",
+          "attributes": {
             "type": "button",
             "className": "cta-button"
           },
-          "elementId": "5001968e-c7ac-80e2-8006-6bb4dd77c074",
-          "elementName": "get started button",
-          "elementType": "rect",
           "content": "Get Started",
           "styles": {
             "width": "120px",
             "height": "40px",
+            "position": "absolute",
             "left": "1167px",
             "top": "10px",
             "backgroundColor": "rgba(0, 123, 255, 1)",
             "color": "rgba(255, 255, 255, 1)",
-            "border": "none",
             "borderRadius": "6px",
             "fontSize": "14px",
             "fontWeight": "600",

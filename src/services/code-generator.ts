@@ -24,42 +24,58 @@ export class CodeGenerator {
       return '';
     }
 
-    const htmlNodes = jsonTree.map(node => this.generateHtmlNode(node));
-    return this.formatHtml(htmlNodes.join('\n'));
+    const htmlNodes = jsonTree.map(node => this.generateHtmlNode(node, 0));
+    return htmlNodes.join('\n');
   }
 
   /**
    * Recursive helper to generate HTML for a single node
    * @param node Single node object
+   * @param depth Current nesting depth for indentation
    * @returns HTML string for the node and its children
    */
-  private generateHtmlNode(node: CodeGeneratorNode): string {
+  private generateHtmlNode(node: CodeGeneratorNode, depth: number = 0): string {
     if (!node || !node.tag) {
       return '';
     }
+
+    const indent = '  '.repeat(depth);
+    const childIndent = '  '.repeat(depth + 1);
 
     // Build attributes string
     const attributesString = this.buildAttributesString(node.attributes);
     
     // Get content (text content if any)
-    const content = node.content || '';
+    const content = node.content ? node.content.trim() : '';
     
     // Process children recursively
     const childrenHtml = node.children && node.children.length > 0
-      ? node.children.map(child => this.generateHtmlNode(child)).join('\n')
+      ? node.children.map(child => this.generateHtmlNode(child, depth + 1)).join('\n')
       : '';
 
     // Build the complete HTML element
-    const openTag = `<${node.tag}${attributesString ? ' ' + attributesString : ''}>`;
-    const closeTag = `</${node.tag}>`;
+    const openTag = `${indent}<${node.tag}${attributesString ? ' ' + attributesString : ''}>`;
+    const closeTag = `${indent}</${node.tag}>`;
     
-    // Combine content and children
-    const innerContent = [content, childrenHtml].filter(Boolean).join('\n');
-    
-    if (innerContent) {
-      return `${openTag}\n${this.indentContent(innerContent)}\n${closeTag}`;
+    // Handle different content scenarios
+    if (content && childrenHtml) {
+      // Has both content and children
+      return `${openTag}\n${childIndent}${content}\n${childrenHtml}\n${closeTag}`;
+    } else if (content) {
+      // Only has content
+      if (content.length < 50) {
+        // Short content on same line
+        return `${openTag}${content}${closeTag.trim()}`;
+      } else {
+        // Long content on separate lines
+        return `${openTag}\n${childIndent}${content}\n${closeTag}`;
+      }
+    } else if (childrenHtml) {
+      // Only has children
+      return `${openTag}\n${childrenHtml}\n${closeTag}`;
     } else {
-      return `${openTag}${closeTag}`;
+      // Self-closing or empty element
+      return `${openTag}${closeTag.trim()}`;
     }
   }
 
@@ -75,7 +91,11 @@ export class CodeGenerator {
 
     return Object.entries(attributes)
       .filter(([_, value]) => value !== undefined && value !== null && value !== '')
-      .map(([key, value]) => `${key}="${this.escapeHtml(value)}"`)
+      .map(([key, value]) => {
+        // Convert className to class for standard HTML
+        const htmlKey = key === 'className' ? 'class' : key;
+        return `${htmlKey}="${this.escapeHtml(value)}"`;
+      })
       .join(' ');
   }
 
@@ -89,49 +109,40 @@ export class CodeGenerator {
       return '';
     }
 
-    const cssRules: string[] = [];
+    const cssRulesSet = new Set<string>();
     
     jsonTree.forEach(node => {
-      const nodeRules = this.generateCssRules(node);
-      if (nodeRules) {
-        cssRules.push(nodeRules);
-      }
+      this.collectCssRules(node, cssRulesSet);
     });
 
-    return cssRules.join('\n\n');
+    return Array.from(cssRulesSet).join('\n\n');
   }
 
   /**
-   * Recursive helper to generate CSS rules for a node and its children
+   * Collect unique CSS rules from node tree to avoid duplicates
    * @param node Single node object
-   * @returns CSS rules string for the node and its descendants
+   * @param cssRulesSet Set to store unique CSS rules
    */
-  private generateCssRules(node: CodeGeneratorNode): string {
+  private collectCssRules(node: CodeGeneratorNode, cssRulesSet: Set<string>): void {
     if (!node) {
-      return '';
+      return;
     }
-
-    const cssBlocks: string[] = [];
 
     // Generate CSS for current node
     const selector = this.generateCssSelector(node);
     const rules = this.generateCssProperties(node);
 
     if (selector && rules) {
-      cssBlocks.push(`${selector} {\n${this.indentContent(rules)}\n}`);
+      const cssBlock = `${selector} {\n${this.indentContent(rules)}\n}`;
+      cssRulesSet.add(cssBlock);
     }
 
     // Process children recursively
     if (node.children && node.children.length > 0) {
       node.children.forEach(child => {
-        const childRules = this.generateCssRules(child);
-        if (childRules) {
-          cssBlocks.push(childRules);
-        }
+        this.collectCssRules(child, cssRulesSet);
       });
     }
-
-    return cssBlocks.join('\n\n');
   }
 
   /**
@@ -233,17 +244,5 @@ export class CodeGenerator {
       .join('\n');
   }
 
-  /**
-   * Format HTML with proper indentation
-   * @param html Raw HTML string
-   * @returns Formatted HTML string
-   */
-  private formatHtml(html: string): string {
-    // Simple formatting - add proper line breaks and indentation
-    return html
-      .split('\n')
-      .map(line => line.trim())
-      .filter(line => line.length > 0)
-      .join('\n');
-  }
+
 }

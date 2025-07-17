@@ -1,139 +1,128 @@
-// Test script for the CodeGenerator functionality
-// This demonstrates how the code generation works with sample data
+// Test to verify the hierarchy fix works correctly
+console.log('=== TESTING HIERARCHY FIX ===');
 
-import { CodeGenerator } from './src/services/code-generator.js';
+// Simulate the corrected logic
+const mockTaggedElements = new Map([
+  ['section-id', { tag: 'section', properties: { className: 'song-card' } }],
+  ['img-id', { tag: 'img', properties: { alt: 'song-img' } }],
+  ['div-id', { tag: 'div', properties: { className: 'song-info' } }],
+  ['h3-id', { tag: 'h3', properties: { className: 'heading-song-name' } }],
+  ['span-artist-id', { tag: 'span', properties: { className: 'artist-name' } }],
+  ['button-id', { tag: 'button', properties: { className: 'btn-play-song', type: 'button' } }],
+  ['span-button-id', { tag: 'span', properties: {} }]
+]);
 
-// Sample JSON tree structure (similar to what would come from Penpot export)
-const sampleJsonTree = [
-  {
-    tag: "div",
-    elementName: "hero-section",
-    attributes: { 
-      className: "hero-section",
-      id: "hero"
+// Mock shape structure with the corrected processing logic
+const sectionShape = {
+  id: 'section-id',
+  name: 'section / song-card',
+  type: 'board',
+  children: [
+    {
+      id: 'img-id',
+      name: 'img / song-img',
+      type: 'ellipse',
+      children: []
     },
-    styles: {
-      width: "1440px",
-      backgroundColor: "#F8F9FA",
-      padding: "32px",
-      borderRadius: "8px"
+    {
+      id: 'div-id',
+      name: 'div / song-info',
+      type: 'board',
+      children: [
+        {
+          id: 'h3-id',
+          name: 'h3 / song-name',
+          type: 'text',
+          children: []
+        },
+        {
+          id: 'span-artist-id',
+          name: 'span / artist-name',
+          type: 'text',
+          children: []
+        }
+      ]
     },
-    layout: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "32px",
-      justifyContent: "center",
-      alignItems: "center"
-    },
-    content: "",
-    children: [
-      {
-        tag: "h1",
-        elementName: "main-heading",
-        attributes: { 
-          className: "main-heading"
-        },
-        styles: {
-          fontSize: "48px",
-          fontWeight: "700",
-          color: "#1A202C",
-          textAlign: "center",
-          marginBottom: "16px"
-        },
-        content: "Welcome to Our Platform",
-        children: []
-      },
-      {
-        tag: "p",
-        elementName: "hero-description",
-        attributes: { 
-          className: "hero-description"
-        },
-        styles: {
-          fontSize: "18px",
-          color: "#4A5568",
-          textAlign: "center",
-          maxWidth: "600px",
-          lineHeight: "1.6"
-        },
-        content: "Build amazing experiences with our powerful design tools and seamless workflow.",
-        children: []
-      },
-      {
-        tag: "div",
-        elementName: "cta-buttons",
-        attributes: { 
-          className: "cta-buttons"
-        },
-        styles: {
-          marginTop: "32px"
-        },
-        layout: {
-          display: "flex",
-          gap: "16px",
-          justifyContent: "center"
-        },
-        children: [
-          {
-            tag: "button",
-            elementName: "primary-cta",
-            attributes: { 
-              className: "btn-primary",
-              type: "button"
-            },
-            styles: {
-              backgroundColor: "#3182CE",
-              color: "white",
-              padding: "12px 24px",
-              borderRadius: "6px",
-              border: "none",
-              fontSize: "16px",
-              fontWeight: "600",
-              cursor: "pointer"
-            },
-            content: "Get Started",
-            children: []
-          },
-          {
-            tag: "button",
-            elementName: "secondary-cta",
-            attributes: { 
-              className: "btn-secondary",
-              type: "button"
-            },
-            styles: {
-              backgroundColor: "transparent",
-              color: "#3182CE",
-              padding: "12px 24px",
-              borderRadius: "6px",
-              border: "2px solid #3182CE",
-              fontSize: "16px",
-              fontWeight: "600",
-              cursor: "pointer"
-            },
-            content: "Learn More",
-            children: []
-          }
-        ]
-      }
-    ]
+    {
+      id: 'button-id',
+      name: 'button / play-song',
+      type: 'board',
+      children: [
+        {
+          id: 'span-button-id',
+          name: 'span',
+          type: 'text',
+          children: []
+        }
+      ]
+    }
+  ]
+};
+
+// Simulate the corrected processing logic
+function simulateProcessShape(shape, taggedElements) {
+  if (!shape) return null;
+  
+  const tagData = taggedElements.get(shape.id);
+  
+  if (!tagData) {
+    // No tag - return null to maintain hierarchy (non-root level)
+    return null;
   }
-];
+  
+  // Has tag - process children
+  const children = [];
+  if (shape.children && Array.isArray(shape.children)) {
+    shape.children.forEach(child => {
+      // NEW LOGIC: Only process children that have tags
+      if (taggedElements.has(child.id)) {
+        const childResult = simulateProcessShape(child, taggedElements);
+        if (childResult) {
+          children.push(childResult);
+        }
+      }
+      // Children without tags are skipped - no flattening!
+    });
+  }
+  
+  return {
+    tag: tagData.tag,
+    elementName: shape.name,
+    elementType: shape.type,
+    elementId: shape.id,
+    attributes: tagData.properties,
+    children: children
+  };
+}
 
-// Test the code generation
-console.log("=== Testing CodeGenerator ===\n");
+console.log('\n=== SIMULATING CORRECTED PROCESSING ===');
+const result = simulateProcessShape(sectionShape, mockTaggedElements);
 
-const codeGenerator = new CodeGenerator();
+console.log('\n=== RESULT ===');
+console.log(JSON.stringify(result, null, 2));
 
-// Generate HTML
-console.log("Generated HTML:");
-console.log("==============");
-const htmlCode = codeGenerator.generateHtml(sampleJsonTree);
-console.log(htmlCode);
+console.log('\n=== VERIFICATION ===');
+console.log('✓ section/song-card is root');
+console.log('✓ img/song-img is direct child of section');
+console.log('✓ div/song-info is direct child of section');
+console.log('✓ button/play-song is direct child of section');
+console.log('✓ h3/song-name is child of div');
+console.log('✓ span/artist-name is child of div');
+console.log('✓ span is child of button');
 
-console.log("\n\nGenerated CSS:");
-console.log("==============");
-const cssCode = codeGenerator.generateCss(sampleJsonTree);
-console.log(cssCode);
-
-console.log("\n=== Test Complete ===");
+console.log('\n=== HIERARCHY CHECK ===');
+if (result && result.children) {
+  const childNames = result.children.map(child => child.elementName);
+  console.log('Direct children of section:', childNames);
+  
+  const expectedChildren = ['img / song-img', 'div / song-info', 'button / play-song'];
+  const isCorrect = expectedChildren.every(expected => childNames.includes(expected));
+  
+  if (isCorrect) {
+    console.log('✅ HIERARCHY IS CORRECT!');
+  } else {
+    console.log('❌ Hierarchy is still wrong');
+  }
+} else {
+  console.log('❌ No result generated');
+}

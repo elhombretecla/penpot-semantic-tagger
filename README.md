@@ -2,6 +2,8 @@
 
 An advanced plugin for Penpot that allows assigning semantic tags (HTML and UI components) to design elements, facilitating code export and collaboration between designers and developers.
 
+<img width="1497" height="888" alt="cover-plugin" src="https://github.com/user-attachments/assets/d191c09c-0df3-41aa-9e47-a1197eb72f5c" />
+
 ## 🚀 Main Features
 
 - **Smart Auto-Tagging**: Automatically tags elements based on layer naming conventions

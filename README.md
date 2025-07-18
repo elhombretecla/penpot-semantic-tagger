@@ -6,7 +6,7 @@ An advanced plugin for Penpot that allows assigning semantic tags (HTML and UI c
 
 ## 🚀 Main Features
 
-- **Smart Auto-Tagging**: Automatically tags elements based on layer naming conventions
+- **Auto-Tagging**: Automatically tags elements based on layer naming conventions
 - **Tree Structure**: Exports elements with parent-child hierarchy using the `children` property
 - **Detailed Styles**: Captures complete CSS properties (colors, typography, borders, shadows)
 - **Layout Information**: Automatically detects Flexbox and Grid properties

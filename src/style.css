@@ -259,6 +259,7 @@ h2 {
 .tagged-elements-list {
   margin-bottom: 1rem;
   overflow-y: auto;
+  max-height: 800px;
 }
 
 .tagged-element-item {
@@ -431,28 +432,112 @@ h2 {
   color: var(--df-primary);
 }
 
-.code-textarea {
+.code-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.code-display {
   width: 100%;
   min-height: 200px;
   max-height: 400px;
-  padding: 1rem;
+  margin: 0;
+  padding: 1rem !important;
   border: none;
-  background: var(--db-primary);
-  color: var(--df-primary);
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  resize: vertical;
+  background: #282a36 !important; /* Dracula background */
+  color: #f8f8f2 !important; /* Dracula foreground */
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Fira Code', monospace !important;
+  font-size: 0.75rem !important;
+  line-height: 1.4 !important;
+  overflow: auto;
   box-sizing: border-box;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
-.code-textarea:focus {
-  outline: 2px solid var(--da-primary);
-  outline-offset: -2px;
+.code-display code {
+  background: transparent !important;
+  color: inherit !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  font-family: inherit !important;
 }
 
-.code-textarea::placeholder {
-  color: var(--df-tertiary);
+/* Dracula Theme Colors Override */
+.code-display .token.comment,
+.code-display .token.prolog,
+.code-display .token.doctype,
+.code-display .token.cdata {
+  color: #6272a4 !important; /* Dracula comment */
+}
+
+.code-display .token.punctuation {
+  color: #f8f8f2 !important; /* Dracula foreground */
+}
+
+.code-display .token.property,
+.code-display .token.tag,
+.code-display .token.constant,
+.code-display .token.symbol,
+.code-display .token.deleted {
+  color: #ff79c6 !important; /* Dracula pink */
+}
+
+.code-display .token.boolean,
+.code-display .token.number {
+  color: #bd93f9 !important; /* Dracula purple */
+}
+
+.code-display .token.selector,
+.code-display .token.attr-name,
+.code-display .token.string,
+.code-display .token.char,
+.code-display .token.builtin,
+.code-display .token.inserted {
+  color: #f1fa8c !important; /* Dracula yellow */
+}
+
+.code-display .token.operator,
+.code-display .token.entity,
+.code-display .token.url,
+.code-display .language-css .token.string,
+.code-display .style .token.string,
+.code-display .token.variable {
+  color: #f8f8f2 !important; /* Dracula foreground */
+}
+
+.code-display .token.atrule,
+.code-display .token.attr-value,
+.code-display .token.function,
+.code-display .token.class-name {
+  color: #8be9fd !important; /* Dracula cyan */
+}
+
+.code-display .token.keyword {
+  color: #ff79c6 !important; /* Dracula pink */
+}
+
+.code-display .token.regex,
+.code-display .token.important {
+  color: #ffb86c !important; /* Dracula orange */
+}
+
+.code-display .token.important,
+.code-display .token.bold {
+  font-weight: bold;
+}
+
+.code-display .token.italic {
+  font-style: italic;
+}
+
+.code-display .token.entity {
+  cursor: help;
+}
+
+/* Placeholder styling for empty code blocks */
+.code-display.empty {
+  color: #6272a4 !important; /* Dracula comment color for placeholder */
   font-style: italic;
 }
 
@@ -470,8 +555,8 @@ h2 {
     align-items: stretch;
   }
   
-  .code-textarea {
-    font-size: 0.7rem;
+  .code-display {
+    font-size: 0.7rem !important;
     min-height: 150px;
   }
 }

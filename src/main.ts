@@ -2,6 +2,17 @@ import "./style.css";
 import { TagData, StylesData, LayoutData, PluginMessage } from './types';
 import { CodeGenerator, CodeGeneratorNode } from './services/code-generator';
 
+// Declare Prism global for TypeScript
+declare global {
+  interface Window {
+    Prism?: {
+      highlightElement: (element: Element) => void;
+    };
+  }
+}
+
+const Prism = window.Prism;
+
 // Global plugin state
 let currentSelection: any[] = [];
 let taggedElements: Map<string, TagData> = new Map();
@@ -30,8 +41,8 @@ const autoTagFeedback = document.getElementById("auto-tag-feedback")!;
 
 // Code generation elements
 const generateCodeBtn = document.getElementById("generate-code")!;
-const htmlOutput = document.getElementById("html-output") as HTMLTextAreaElement;
-const cssOutput = document.getElementById("css-output") as HTMLTextAreaElement;
+const htmlOutput = document.getElementById("html-output")!;
+const cssOutput = document.getElementById("css-output")!;
 const copyHtmlBtn = document.getElementById("copy-html")!;
 const copyCssBtn = document.getElementById("copy-css")!;
 
@@ -70,8 +81,8 @@ function setupEventListeners() {
   
   // Code generation functionality
   generateCodeBtn.addEventListener("click", generateCode);
-  copyHtmlBtn.addEventListener("click", () => copyToClipboard(htmlOutput.value, "HTML"));
-  copyCssBtn.addEventListener("click", () => copyToClipboard(cssOutput.value, "CSS"));
+  copyHtmlBtn.addEventListener("click", () => copyToClipboard("HTML"));
+  copyCssBtn.addEventListener("click", () => copyToClipboard("CSS"));
   
   // Collapsible sections functionality
   setupCollapsibleSections();
@@ -442,14 +453,35 @@ function processRichJsonForCodeGeneration(exportData: any) {
     const htmlCode = codeGenerator.generateHtml(codeNodes);
     const cssCode = codeGenerator.generateCss(codeNodes);
 
-    // Update the UI
-    htmlOutput.value = htmlCode;
-    cssOutput.value = cssCode;
+    // Update the UI with syntax highlighting
+    updateCodeDisplay(htmlOutput, htmlCode, 'html');
+    updateCodeDisplay(cssOutput, cssCode, 'css');
 
     showCodeGenerationFeedback(`✅ Code generated successfully! ${codeNodes.length} root element(s) processed.`, "success");
   } catch (error) {
     console.error("Error processing rich JSON:", error);
     showCodeGenerationFeedback("Error processing data for code generation.", "error");
+  }
+}
+
+// Update code display with syntax highlighting
+function updateCodeDisplay(element: HTMLElement, code: string, language: string) {
+  const codeElement = element.querySelector('code');
+  if (!codeElement) return;
+
+  if (!code || code.trim() === '') {
+    codeElement.textContent = `Generated ${language.toUpperCase()} will appear here...`;
+    element.classList.add('empty');
+    return;
+  }
+
+  element.classList.remove('empty');
+  codeElement.textContent = code;
+  codeElement.className = `language-${language}`;
+  
+  // Apply syntax highlighting if Prism is available
+  if (Prism) {
+    Prism.highlightElement(codeElement);
   }
 }
 
@@ -472,14 +504,19 @@ function convertToCodeGeneratorNode(node: any): CodeGeneratorNode {
 }
 
 // Copy content to clipboard
-async function copyToClipboard(content: string, type: string) {
-  if (!content || content.trim() === '') {
+async function copyToClipboard(type: string) {
+  // Get the actual code content from the display elements
+  const element = type === "HTML" ? htmlOutput : cssOutput;
+  const codeElement = element.querySelector('code');
+  const actualContent = codeElement?.textContent || '';
+  
+  if (!actualContent || actualContent.trim() === '' || actualContent.includes('will appear here')) {
     showCodeGenerationFeedback(`No ${type} code to copy. Generate code first.`, "error");
     return;
   }
 
   try {
-    await navigator.clipboard.writeText(content);
+    await navigator.clipboard.writeText(actualContent);
     
     // Visual feedback
     const button = type === "HTML" ? copyHtmlBtn : copyCssBtn;
@@ -497,16 +534,21 @@ async function copyToClipboard(content: string, type: string) {
   } catch (error) {
     console.error("Error copying to clipboard:", error);
     
-    // Fallback: select the text in the textarea
-    const textarea = type === "HTML" ? htmlOutput : cssOutput;
-    textarea.select();
-    textarea.setSelectionRange(0, 99999); // For mobile devices
+    // Fallback: create a temporary textarea for copying
+    const tempTextarea = document.createElement('textarea');
+    tempTextarea.value = actualContent;
+    tempTextarea.style.position = 'fixed';
+    tempTextarea.style.left = '-9999px';
+    document.body.appendChild(tempTextarea);
+    tempTextarea.select();
     
     try {
       document.execCommand('copy');
       showCodeGenerationFeedback(`${type} code copied to clipboard!`, "success");
     } catch (fallbackError) {
       showCodeGenerationFeedback("Unable to copy to clipboard. Please select and copy manually.", "error");
+    } finally {
+      document.body.removeChild(tempTextarea);
     }
   }
 }

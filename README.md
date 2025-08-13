@@ -259,6 +259,10 @@ const suggestions: Record<string, Array<{key: string, value: string, placeholder
 };
 ```
 
+## 🌐 Production Configuration
+
+The plugin uses a simplified approach for image URLs that works reliably in both development and production environments.
+
 ## 🤝 Contributing
 
 1. Fork the project

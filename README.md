@@ -259,23 +259,6 @@ const suggestions: Record<string, Array<{key: string, value: string, placeholder
 };
 ```
 
-## 🐛 Troubleshooting
-
-### Plugin doesn't load
-- Verify the development server is running
-- Confirm the manifest URL: `http://localhost:4400/manifest.json`
-- Check browser console for errors
-
-### Tags don't save
-- Ensure you have write permissions in the file
-- Verify the element is selected before applying
-- Check that the Penpot file is saved
-
-### Export doesn't work
-- Verify there are tagged elements
-- Confirm the browser allows clipboard access
-- Check JavaScript console for errors
-
 ## 🤝 Contributing
 
 1. Fork the project

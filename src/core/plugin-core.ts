@@ -5,6 +5,7 @@ import { ExportService } from '../services/export-service';
 import { AutoTagService } from '../services/auto-tag-service';
 import { MessageHandler } from '../handlers/message-handler';
 import { EventHandler } from '../handlers/event-handler';
+import { initializePenpotConfig } from '../utils/penpot-config';
 
 /**
  * Core plugin class that orchestrates all services and handlers
@@ -35,6 +36,9 @@ export class PluginCore {
    * Initialize the plugin
    */
   initialize(): void {
+    // Initialize Penpot configuration (including base URL detection)
+    initializePenpotConfig();
+
     // Open the plugin interface
     penpot.ui.open("Semantic Tagging", `?theme=${penpot.theme}`, {
       width: PLUGIN_CONFIG.width,

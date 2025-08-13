@@ -320,7 +320,8 @@ export function extractImageStyles(shape: any): VisualStyles {
 /**
  * Helper function to extract image URL from various sources
  * Based on Penpot's Image API and ImageData interface
- * Generates URLs in Penpot's standard format: http://localhost:3449/assets/by-file-media-id/{id}
+ * Generates URLs in Penpot's standard format: {baseUrl}/assets/by-file-media-id/{id}
+ * Automatically detects the correct base URL for the current Penpot environment
  */
 function extractImageUrl(imageFill: any, shape: any): string | null {
   try {
@@ -450,13 +451,22 @@ function extractImageUrl(imageFill: any, shape: any): string | null {
 
 /**
  * Build a Penpot-style image URL from an image ID
- * Format: http://localhost:3449/assets/by-file-media-id/{id}
+ * Format: {baseUrl}/assets/by-file-media-id/{id}
+ * Uses dynamic base URL detection for production compatibility
  */
 function buildPenpotImageUrl(imageId: string): string {
-  // Get the base URL from the current environment
-  // In a real plugin, you might want to detect this dynamically
-  const baseUrl = getPenpotBaseUrl();
-  return `${baseUrl}/assets/by-file-media-id/${imageId}`;
+  // Get the base URL from the current environment (manual override or auto-detected)
+  const baseUrl = getCurrentPenpotBaseUrl();
+  const imageUrl = `${baseUrl}/assets/by-file-media-id/${imageId}`;
+  
+  console.log('🖼️ Building Penpot image URL:', {
+    imageId,
+    baseUrl,
+    isManualUrl: !!manualBaseUrl,
+    finalUrl: imageUrl
+  });
+  
+  return imageUrl;
 }
 
 /**
@@ -465,16 +475,83 @@ function buildPenpotImageUrl(imageId: string): string {
  */
 function getPenpotBaseUrl(): string {
   try {
-    // Try to get the base URL from the current window location
+    // Return manual URL if set
+    if (manualBaseUrl) {
+      return manualBaseUrl;
+    }
+    // Method 1: Try to get the base URL from the parent window (Penpot app)
+    if (typeof window !== 'undefined' && window.parent && window.parent !== window) {
+      try {
+        const parentLocation = window.parent.location;
+        if (parentLocation && parentLocation.hostname) {
+          const { protocol, hostname, port } = parentLocation;
+          const portPart = port && port !== '80' && port !== '443' ? `:${port}` : '';
+          return `${protocol}//${hostname}${portPart}`;
+        }
+      } catch (e) {
+        // Cross-origin access might be blocked, continue with other methods
+      }
+    }
+
+    // Method 2: Try to get the base URL from the current window location
     if (typeof window !== 'undefined' && window.location) {
       const { protocol, hostname, port } = window.location;
-      const portPart = port ? `:${port}` : '';
-      return `${protocol}//${hostname}${portPart}`;
+      
+      // Skip if we're on localhost (development environment)
+      if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+        const portPart = port && port !== '80' && port !== '443' ? `:${port}` : '';
+        return `${protocol}//${hostname}${portPart}`;
+      }
+    }
+
+    // Method 3: Try to detect from document referrer
+    if (typeof document !== 'undefined' && document.referrer) {
+      try {
+        const referrerUrl = new URL(document.referrer);
+        if (referrerUrl.hostname !== 'localhost' && referrerUrl.hostname !== '127.0.0.1') {
+          const portPart = referrerUrl.port && referrerUrl.port !== '80' && referrerUrl.port !== '443' ? `:${referrerUrl.port}` : '';
+          return `${referrerUrl.protocol}//${referrerUrl.hostname}${portPart}`;
+        }
+      } catch (e) {
+        // Invalid referrer URL, continue
+      }
+    }
+
+    // Method 4: Check if we can access Penpot context for file information
+    if (typeof window !== 'undefined' && (window as any).penpot) {
+      const penpot = (window as any).penpot;
+      
+      // Try to get URL from current file context if available
+      if (penpot.currentFile && penpot.currentFile.id) {
+        // If we're in production Penpot, construct the URL based on known patterns
+        // Production Penpot typically uses https://design.penpot.app or similar
+        const hostname = window.location.hostname;
+        if (hostname.includes('penpot') && !hostname.includes('localhost')) {
+          return `${window.location.protocol}//${hostname}`;
+        }
+      }
+    }
+
+    // Method 5: Fallback to common production URLs based on hostname patterns
+    if (typeof window !== 'undefined' && window.location) {
+      const hostname = window.location.hostname;
+      
+      // Check for common Penpot production patterns
+      if (hostname.includes('design.penpot.app')) {
+        return 'https://design.penpot.app';
+      } else if (hostname.includes('penpot.app')) {
+        return `${window.location.protocol}//${hostname}`;
+      } else if (hostname.includes('penpot.dev')) {
+        return `${window.location.protocol}//${hostname}`;
+      } else if (hostname.includes('penpot.app')) {
+        return `${window.location.protocol}//${hostname}`;
+      }
     }
     
-    // Fallback to common Penpot development URL
+    // Fallback to common Penpot development URL only if we're actually in development
     return 'http://localhost:3449';
   } catch (error) {
+    console.warn('Error detecting Penpot base URL, using fallback:', error);
     // If we can't detect the URL, use the default development URL
     return 'http://localhost:3449';
   }
@@ -487,6 +564,25 @@ function isValidPenpotImageId(id: string): boolean {
   // Penpot typically uses UUID format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return uuidRegex.test(id);
+}
+
+// Global variable to allow manual override of base URL if needed
+let manualBaseUrl: string | null = null;
+
+/**
+ * Set a manual base URL for Penpot assets (useful for specific deployments)
+ * @param url The base URL to use (e.g., 'https://design.penpot.app')
+ */
+export function setPenpotBaseUrl(url: string): void {
+  manualBaseUrl = url;
+  console.log('🖼️ Manual Penpot base URL set to:', url);
+}
+
+/**
+ * Get the currently configured base URL (manual or auto-detected)
+ */
+export function getCurrentPenpotBaseUrl(): string {
+  return manualBaseUrl || getPenpotBaseUrl();
 }
 
 

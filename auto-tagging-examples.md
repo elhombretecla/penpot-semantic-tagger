@@ -52,6 +52,26 @@ The plugin can automatically tag elements based on layer names using the format:
 | `h1/main-title` | `h1` | `className: "heading-main-title"` |
 | `h2/section-header` | `h2` | `className: "heading-section-header"` |
 
+### 🆔 Inline ID and Class Syntax
+
+You can add `id` and `className` directly in the first segment (before the first `/`) using CSS-like selector syntax:
+
+| Layer Name | Generated Tag | Automatic Properties |
+|------------|---------------|---------------------|
+| `div#main` | `div` | `id: "main"` |
+| `div.utility` | `div` | `className: "utility"` |
+| `div.utility.big` | `div` | `className: "utility big"` |
+| `div#main.utility.big` | `div` | `id: "main"`, `className: "utility big"` |
+| `button#cta.primary/primary` | `button` | `id: "cta"`, `className: "btn-primary primary"` |
+| `section#hero.full-width/hero` | `section` | `id: "hero"`, `className: "hero full-width"` |
+
+**Important notes:**
+- Inline selectors (`#id`, `.class`) only work in the **first segment** (before the first `/`)
+- The rest of the layer name (after `/`) continues to work as before
+- Inline `id` does **not** overwrite an existing `id` property
+- Inline classes are **merged** with existing `className` (no duplicates)
+- This works with all tag types including MUI, Chakra, and custom components
+
 ## 🚀 How to Use Auto-Tagging
 
 ### Step 1: Name Your Layers
@@ -98,7 +118,7 @@ After auto-tagging, you get a clean and structured JSON:
   "tree": [
     {
       "tag": "header",
-      "properties": { "className": "main-header" },
+      "properties": { "id": "site-header", "className": "main-header" },
       "elementId": "unique-id-1",
       "styles": { "width": "100%", "height": "80px" },
       "children": [
@@ -110,7 +130,8 @@ After auto-tagging, you get a clean and structured JSON:
             {
               "tag": "button",
               "properties": { 
-                "className": "btn-primary",
+                "id": "cta",
+                "className": "btn-primary highlight",
                 "type": "button"
               },
               "elementId": "unique-id-3",

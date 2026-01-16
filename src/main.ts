@@ -449,9 +449,10 @@ function processRichJsonForCodeGeneration(exportData: any) {
     // Convert the export data tree to CodeGeneratorNode format
     const codeNodes: CodeGeneratorNode[] = exportData.tree.map((node: any) => convertToCodeGeneratorNode(node));
 
-    // Generate HTML and CSS
-    const htmlCode = codeGenerator.generateHtml(codeNodes);
+    // IMPORTANT: Generate CSS first to detect collisions and populate board injection info
+    // This allows HTML generation to know which boards need IDs injected
     const cssCode = codeGenerator.generateCss(codeNodes);
+    const htmlCode = codeGenerator.generateHtml(codeNodes);
 
     // Update the UI with syntax highlighting
     updateCodeDisplay(htmlOutput, htmlCode, 'html');
@@ -490,6 +491,8 @@ function convertToCodeGeneratorNode(node: any): CodeGeneratorNode {
   const codeNode: CodeGeneratorNode = {
     tag: node.tag,
     elementName: node.elementName,
+    elementId: node.elementId,       // Needed for board ID injection
+    elementType: node.elementType,   // Needed for board detection
     attributes: node.attributes || {},
     styles: node.styles || {},
     content: node.content

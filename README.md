@@ -126,6 +126,7 @@ Transform your tagged design elements into clean, production-ready HTML and CSS 
 - **Automatic Style Extraction**: Colors, typography, spacing, layout properties
 - **Smart Class Generation**: Uses your custom className or generates from element names
 - **Flexbox & Grid Support**: Automatically detects and generates layout CSS
+- **Smart CSS Scoping**: Automatically prevents CSS collisions between boards and within the same board (see below)
 - **Copy to Clipboard**: One-click copying with visual feedback
 
 **Example Output:**
@@ -146,6 +147,113 @@ Transform your tagged design elements into clean, production-ready HTML and CSS 
 - A modal opens with structured information
 - Copy to clipboard or save to a .json file
 - Includes project metadata, positions, sizes, and properties
+
+### 🎯 Smart CSS Scoping by Board
+
+The plugin automatically detects and resolves CSS selector collisions between boards (frames/artboards). This ensures that elements with the same class name in different boards don't interfere with each other.
+
+**Key behaviors:**
+
+- **No collisions = No changes**: If the same selector only appears in one board, the CSS is generated exactly as before with no prefixes.
+- **Automatic collision detection**: When the same selector (e.g., `.circle`) appears in multiple boards with different styles, the plugin automatically applies scoping.
+- **Minimal HTML changes**: Board IDs are only added to the HTML when strictly necessary for scoping.
+
+**How it works:**
+
+1. The plugin analyzes all CSS selectors across all boards
+2. If a selector appears in multiple boards, it prefixes each rule with the board's scope selector
+3. Board scope selector priority:
+   - Uses the board's existing `id` attribute (e.g., `#scene-1`)
+   - Uses the board's existing `className` (e.g., `.hero-section`)
+   - Auto-generates an ID (e.g., `#board-abc123`) only when no id/class exists
+
+**Example - No collision (unchanged output):**
+
+If `.circle` only appears in one board:
+```css
+.circle {
+  width: 40px;
+  height: 40px;
+  background-color: #ff0000;
+}
+```
+
+**Example - With collision (automatic scoping):**
+
+If `.circle` appears in multiple boards with different styles:
+```css
+#board-1 .circle {
+  width: 40px;
+  height: 40px;
+  background-color: #ff0000;
+}
+
+#board-2 .circle {
+  width: 60px;
+  height: 60px;
+  background-color: #00ff00;
+}
+```
+
+**Benefits:**
+- Existing projects without collisions produce identical CSS
+- No manual intervention needed for multi-board designs
+- Styles are isolated per board when needed
+- HTML stays clean unless scoping requires ID injection
+
+### 🔀 Local Scope Collision Resolution
+
+When multiple elements share the same CSS selector but have **different styles within the same board**, the plugin automatically resolves the conflict to preserve all styles.
+
+**How it works:**
+
+1. The plugin detects when the same selector (e.g., `.button`) appears multiple times with different CSS properties
+2. It attempts to scope the conflicting rules using an ancestor element's selector:
+   - Looks for a parent with an `id` attribute
+   - Falls back to a parent with a `className`
+3. If no suitable ancestor exists, it auto-generates a unique ID for the element
+
+**Example - Same selector, different styles in same board:**
+
+Given this structure:
+```html
+<div class="container-a">
+  <div class="button">Blue button</div>
+</div>
+<div class="container-b">
+  <div class="button">Gray button</div>
+</div>
+```
+
+The plugin generates:
+```css
+.container-a .button {
+  background-color: #0066ff;
+}
+
+.container-b .button {
+  background-color: #999999;
+}
+```
+
+**Fallback with auto-generated IDs:**
+
+If neither element has a distinguishing ancestor, the plugin injects unique IDs:
+```css
+#el-abc123 {
+  background-color: #0066ff;
+}
+
+.button {
+  background-color: #999999;
+}
+```
+
+**Key guarantees:**
+- No styles are ever lost due to selector collisions
+- Elements without collisions are not modified
+- ID/class injection happens only when strictly necessary
+- Existing class names and IDs are always preferred over auto-generated ones
 
 ## 🛠️ Development
 
